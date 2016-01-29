@@ -3,8 +3,8 @@
   (:require
    [clojure.walk :refer [keywordize-keys]]
    [slingshot.slingshot :refer [throw+]]
-   [puppetlabs.http.client.sync :refer [create-client]]
-   [puppetlabs.http.client.common :as http]
+   ;[puppetlabs.http.client.sync :refer [create-client]]
+   [puppetlabs.http.client.common :refer [make-request]]
    ;[puppetlabs.certificate-authority.core :as ssl]
    [puppetlabs.kitchensink.json :as json])
   (:import [com.fasterxml.jackson.core JsonParseException]))
@@ -20,7 +20,7 @@
   [error]
   (and (map? error)
        (keyword? (:kind error))
-       (= "puppetlabs.pe_clients" (-> error :kind namespace))))
+       (= "puppetlabs.pe-clients" (-> error :kind namespace))))
 
 (defn api-caller
   "Given a client, base-url, method, path and optionally opts makes a request
@@ -33,13 +33,13 @@
    (let [opts (merge {:as :text} opts)
          url (str base-url path)
          response (try
-                    (http/request client url :method opts)
+                    (make-request client url method opts)
                     (catch java.net.ConnectException e
-                      (throw+ {:kind :puppetlabs.code-manager.http/connection-failure
+                      (throw+ {:kind :puppetlabs.pe-clients/connection-failure
                                :exception (.toString e)
                                :msg (str "Could not connect to server with " url)})))]
      (if (http-error? response)
-       (throw+ {:kind :puppetlabs.code-manager.http/rest-failure
+       (throw+ {:kind :puppetlabs.pe-clients/rest-failure
                 :exception (:body response)
                 :msg (format "Error %sing to %s Status: %d" (name method) url (:status response))
                 :response (dissoc response :opts)})
@@ -59,7 +59,7 @@
          parsed-body (try
                        (json/parse-string (:body response))
                        (catch com.fasterxml.jackson.core.JsonParseException e
-                         (throw+ {:kind :puppetlabs.code-manager.http/json-parse-error
+                         (throw+ {:kind :puppetlabs.pe-clients/json-parse-error
                                   :exception "Could not parse response body as JSON"
                                   :msg (format "Invalid JSON body: %s" (:body response))})))]
      (assoc response :body (keywordize-keys parsed-body)))))

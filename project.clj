@@ -1,4 +1,5 @@
 (def tk-jetty-version "1.5.0")
+(def tk-version "1.2.0")
 
 (defproject puppetlabs/pe-clients "0.1.0-SNAPSHOT"
   :description "Clients for pe services"
@@ -10,7 +11,8 @@
                  [puppetlabs/kitchensink "1.2.0" :exclusions [joda-time clj-time]]
                  [puppetlabs/http-client "0.4.7-SNAPSHOT"]]
   :pedantic? :abort
-  :profiles {:test {:dependencies [;[puppetlabs/trapperkeeper :classifier "test"]
+  :profiles {:test {:dependencies [[puppetlabs/trapperkeeper ~tk-version :exclusions [joda-time clj-time]]
+                                   [puppetlabs/trapperkeeper ~tk-version :classifier "test" :exclusions [joda-time clj-time]]
                                    [puppetlabs/trapperkeeper-webserver-jetty9 ~tk-jetty-version :exclusions  [joda-time clj-time]]
                                    [puppetlabs/trapperkeeper-webserver-jetty9 ~tk-jetty-version :classifier "test" :exclusions  [joda-time clj-time]]]}}
 
