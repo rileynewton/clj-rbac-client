@@ -1,19 +1,24 @@
 (ns puppetlabs.pe-clients.test-server
-  (:require [ring.middleware.params :as ring-params]
-            [ring.middleware.json :refer [wrap-json-body
-                                          wrap-json-response]]
-            [puppetlabs.trapperkeeper.core :as tk]))
+  (:require
+   [ring.middleware.params :refer [wrap-params]]
+   [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+   [ring.middleware.json :refer [wrap-json-body
+                                 wrap-json-response]]
+   [puppetlabs.trapperkeeper.core :as tk]))
 
 
 (defn make-json-handler
   [response]
   (let [handler (fn handler
                   [request]
-                  (assoc-in response [:body :_request] request
-                            [:headers]  {"Content-Type" "application/json"}))]
+                  (-> response
+                      (assoc-in [:body :_request] (dissoc request :body))
+                      (assoc :headers {"Content-Type" "application/json"})))]
     (-> handler
         wrap-json-response
-        (wrap-json-body {:keywords? true}))))
+        (wrap-json-body {:keywords? true})
+        wrap-keyword-params
+        wrap-params)))
 
 (defn non-json-error-handler
   [req]
