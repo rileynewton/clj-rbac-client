@@ -9,9 +9,10 @@
                  [ring/ring-json  "0.3.1" :exclusions [clj-time]]
                  [slingshot "0.12.2"]
                  [puppetlabs/kitchensink "1.2.0" :exclusions [joda-time clj-time]]
-                 [puppetlabs/http-client "0.4.7-SNAPSHOT"]]
+                 [puppetlabs/http-client "0.4.7-SNAPSHOT"]
+                 [puppetlabs/trapperkeeper ~tk-version :exclusions [joda-time clj-time]]]
   :pedantic? :abort
-  :profiles {:test {:dependencies [[puppetlabs/trapperkeeper ~tk-version :exclusions [joda-time clj-time]]
+  :profiles {:test {:dependencies [
                                    [puppetlabs/trapperkeeper ~tk-version :classifier "test" :exclusions [joda-time clj-time]]
                                    [puppetlabs/trapperkeeper-webserver-jetty9 ~tk-jetty-version :exclusions  [joda-time clj-time]]
                                    [puppetlabs/trapperkeeper-webserver-jetty9 ~tk-jetty-version :classifier "test" :exclusions  [joda-time clj-time]]]}}
