@@ -1,6 +1,13 @@
 (def tk-jetty-version "1.5.0")
 (def tk-version "1.2.0")
 
+(defn deploy-info
+  [url]
+  {:url url
+   :username :env/nexus_jenkins_username
+   :password :env/nexus_jenkins_password
+   :sign-releases false})
+
 (defproject puppetlabs/pe-clients "0.1.0-SNAPSHOT"
   :description "Clients for pe services"
   :license {:name "Apache License, Version 2.0"
@@ -20,4 +27,8 @@
 
   :classifiers  [["test" :testutils]]
 
-  :test-paths ["test"])
+  :test-paths ["test"]
+
+  :deploy-repositories [["releases" ~(deploy-info "http://nexus.delivery.puppetlabs.net/content/repositories/releases/")]
+                        ["snapshots" ~(deploy-info "http://nexus.delivery.puppetlabs.net/content/repositories/snapshots/")]]
+  )
