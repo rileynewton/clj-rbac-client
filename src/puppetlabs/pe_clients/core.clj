@@ -30,36 +30,47 @@
 
   ([client base-url method path] (api-caller client base-url method path {}))
   ([client base-url method path opts]
-   (let [opts (merge {:as :text} opts)
+   (let [throw-rest-errors (:status-errors opts)
+         opts (-> opts
+                  (dissoc :status-errors)
+                  (#(merge {:as :text} %)))
+         pe-errors? (dissoc opts)
          url (str base-url path)
          response (try
                     (make-request client url method opts)
                     (catch java.net.ConnectException e
                       (throw+ {:kind :puppetlabs.pe-clients/connection-failure
-                               :exception (.toString e)
+                               :details {:exception (.toString e)}
                                :msg (str "Could not connect to server with " url)})))]
-     (if (http-error? response)
-       (throw+ {:kind :puppetlabs.pe-clients/rest-failure
-                :exception (:body response)
+     (if (and throw-rest-errors (http-error? response))
+       (throw+ {:kind :puppetlabs.pe-clients/status-error
+                :details {:status (:status response)
+                          :body (:body response)}
                 :msg (format "Error %sing to %s Status: %d" (name method) url (:status response))
-                :response (dissoc response :opts)})
-       response))))
+                :response (dissoc response :opts)}))
+       response)))
 
 (defn json-api-caller
   "Wraps api caller but will convert the body of the request/response to/from json.
   Adds approrpriate content type headers."
   ([client base-url method path] (json-api-caller client base-url method path {}))
   ([client base-url method path opts]
-   (let [opts (cond-> opts
+   (let [throw-body (:throw-body opts)
+         opts (cond-> opts
                 (not (contains? opts :headers)) (assoc :headers {})
                 true (assoc-in [:headers "Accept"] "application/json")
                 (contains? opts :body) (assoc-in [:headers "Content-Type"] "application/json")
-                (contains? opts :body) (update-in [:body] json/generate-string))
+                (contains? opts :body) (update-in [:body] json/generate-string)
+                ;; We'll throw after parsing here.
+                 true (dissoc :throw-body)
+                (:throw-body opts) (assoc :status-errors false))
          response (api-caller client base-url method path opts)
          parsed-body (try
-                       (json/parse-string (:body response))
+                       (-> (json/parse-string (:body response))
+                           keywordize-keys)
                        (catch com.fasterxml.jackson.core.JsonParseException e
                          (throw+ {:kind :puppetlabs.pe-clients/json-parse-error
-                                  :exception "Could not parse response body as JSON"
                                   :msg (format "Invalid JSON body: %s" (:body response))})))]
-     (assoc response :body (keywordize-keys parsed-body)))))
+     (when (and throw-body (http-error? response))
+       (throw+ (update-in parsed-body [:kind] keyword)))
+     (assoc response :body parsed-body))))

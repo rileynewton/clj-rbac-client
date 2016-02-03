@@ -17,11 +17,12 @@
                (:body (core/api-caller client (format "http://localhost:%s/" port) :get ""))))))
 
     (let [client (create-client {})
-          app (constantly {:status 500 :body "ok"})
+          app (constantly {:status 500 :body "server error"})
           port 38924]
       (with-test-webserver app port
-        (is (thrown+? [:kind :puppetlabs.pe-clients/rest-failure]
-               (:body (core/api-caller client (format "http://localhost:%s/" port) :get ""))))))
+(is (= "server error" (:body (core/api-caller client (format "http://localhost:%s/" port) :get ""))))
+        (is (thrown+? [:kind :puppetlabs.pe-clients/status-error]
+               (:body (core/api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true}))))))
 (let [client (create-client {})
           app (constantly {:status 500 :body "ok"})
           port 38924]
@@ -38,11 +39,20 @@
           port 38924]
       (with-test-webserver app port
         (let [response (core/json-api-caller client (format "http://localhost:%s/foo" port) :get "/bar?p=1")]
-        (is (= 200 (:status response)))
-        (is (= 1 (get-in response [:body :foo])))
-        (is (= "application/json" (get-in response [:body :_request :headers :accept])))
-        (is (= "/foo/bar" (get-in response [:body :_request :uri])))
-        (is (= "1" (get-in response [:body :_request :params :p])))
-        )))
-
-  ))
+          (is (= 200 (:status response)))
+          (is (= 1 (get-in response [:body :foo])))
+          (is (= "application/json" (get-in response [:body :_request :headers :accept])))
+          (is (= "/foo/bar" (get-in response [:body :_request :uri])))
+          (is (= "1" (get-in response [:body :_request :params :p])))
+          )))
+    (let [client (create-client {})
+          app (test-server/make-json-handler {:status 400
+                                              :body {:kind :invalid
+                                                     :msg "oops"}})
+          port 38924]
+      (with-test-webserver app port
+        (is (thrown+? [:kind :invalid]
+                      (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:throw-body true})))
+        (is (thrown+? [:kind :puppetlabs.pe-clients/status-error]
+        (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true})))
+        ))))
