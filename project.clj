@@ -23,7 +23,7 @@
                                    [puppetlabs/trapperkeeper ~tk-version :classifier "test" :exclusions [joda-time clj-time]]
                                    [puppetlabs/trapperkeeper-webserver-jetty9 ~tk-jetty-version :exclusions  [joda-time clj-time]]
                                    [puppetlabs/trapperkeeper-webserver-jetty9 ~tk-jetty-version :classifier "test" :exclusions  [joda-time clj-time]]]}
-             :testutils {:source-paths ^:replace  ["test/clj"]}}
+             :testutils {:source-paths ^:replace  ["test"]}}
 
   :classifiers  [["test" :testutils]]
 
