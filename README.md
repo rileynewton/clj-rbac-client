@@ -1,4 +1,4 @@
-# pe-clients
+# rbac-client
 
 A Clojure library designed to hold lightweight api clients for pe services.
 

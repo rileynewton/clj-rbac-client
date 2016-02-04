@@ -8,8 +8,8 @@
    :password :env/nexus_jenkins_password
    :sign-releases false})
 
-(defproject puppetlabs/pe-clients "0.1.1-SNAPSHOT"
-  :description "Clients for pe services"
+(defproject puppetlabs/rbac-client "0.1.1-SNAPSHOT"
+  :description "Tools for interacting with PE RBAC"
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]

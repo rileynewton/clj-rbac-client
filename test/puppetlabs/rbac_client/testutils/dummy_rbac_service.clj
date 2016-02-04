@@ -1,8 +1,8 @@
-(ns puppetlabs.pe-clients.testutils.dummy-rbac-service
-  (:require [puppetlabs.pe-clients.protocols.rbac :refer [RbacConsumerService]]
+(ns puppetlabs.rbac-client.testutils.dummy-rbac-service
+  (:require [puppetlabs.rbac-client.protocols.rbac :refer [RbacConsumerService]]
             [puppetlabs.trapperkeeper.services :refer  [defservice]]
             [slingshot.slingshot :refer  [throw+]]
-            [puppetlabs.pe-clients.services.rbac :refer [str->uuid]]))
+            [puppetlabs.rbac-client.services.rbac :refer [str->uuid]]))
 
 (def dummy-rbac (reify RbacConsumerService
                   (is-permitted? [this subject perm-str] true)

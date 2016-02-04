@@ -1,4 +1,4 @@
-(ns puppetlabs.pe-clients.test-server
+(ns puppetlabs.rbac-client.test-server
   (:require
    [ring.middleware.params :refer [wrap-params]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]

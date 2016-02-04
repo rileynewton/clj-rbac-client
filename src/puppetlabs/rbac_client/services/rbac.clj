@@ -1,9 +1,9 @@
-(ns puppetlabs.pe-clients.services.rbac
+(ns puppetlabs.rbac-client.services.rbac
   (:require
    [clojure.string]
    [slingshot.slingshot :refer [throw+]]
-   [puppetlabs.pe-clients.core :refer [json-api-caller]]
-   [puppetlabs.pe-clients.protocols.rbac :refer [RbacConsumerService]]
+   [puppetlabs.rbac-client.core :refer [json-api-caller]]
+   [puppetlabs.rbac-client.protocols.rbac :refer [RbacConsumerService]]
    [puppetlabs.http.client.common :as http]
    [puppetlabs.http.client.sync :refer [create-client]]
    [puppetlabs.trapperkeeper.core :refer [defservice]]

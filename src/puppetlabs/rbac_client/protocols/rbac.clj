@@ -1,4 +1,4 @@
-(ns puppetlabs.pe-clients.protocols.rbac)
+(ns puppetlabs.rbac-client.protocols.rbac)
 
 (defprotocol RbacConsumerService
   (is-permitted? [this subject perm-str]

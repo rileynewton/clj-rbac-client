@@ -1,9 +1,9 @@
-(ns puppetlabs.pe-clients.services.activity
+(ns puppetlabs.rbac-client.services.activity
   (:require
-   [puppetlabs.pe-clients.protocols.activity :refer [ActivityReportingService]]
+   [puppetlabs.rbac-client.protocols.activity :refer [ActivityReportingService]]
    [puppetlabs.http.client.common :as http]
    [puppetlabs.http.client.sync :refer [create-client]]
-   [puppetlabs.pe-clients.core :refer [json-api-caller]]
+   [puppetlabs.rbac-client.core :refer [json-api-caller]]
    [puppetlabs.trapperkeeper.core :refer [defservice]]
    [puppetlabs.trapperkeeper.services :refer [service-context]]))
 

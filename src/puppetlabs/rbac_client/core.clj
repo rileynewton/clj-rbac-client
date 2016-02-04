@@ -1,4 +1,4 @@
-(ns puppetlabs.pe-clients.core
+(ns puppetlabs.rbac-client.core
   "This is the standard api-caller interface for talking to json apis with pe-style errors"
   (:require
    [clojure.walk :refer [keywordize-keys]]
@@ -20,7 +20,7 @@
   [error]
   (and (map? error)
        (keyword? (:kind error))
-       (= "puppetlabs.pe-clients" (-> error :kind namespace))))
+       (= "puppetlabs.rbac-client" (-> error :kind namespace))))
 
 (defn api-caller
   "Given a client, base-url, method, path and optionally opts makes a request
@@ -39,11 +39,11 @@
          response (try
                     (make-request client url method opts)
                     (catch java.net.ConnectException e
-                      (throw+ {:kind :puppetlabs.pe-clients/connection-failure
+                      (throw+ {:kind :puppetlabs.rbac-client/connection-failure
                                :details {:exception (.toString e)}
                                :msg (str "Could not connect to server with " url)})))]
      (if (and throw-rest-errors (http-error? response))
-       (throw+ {:kind :puppetlabs.pe-clients/status-error
+       (throw+ {:kind :puppetlabs.rbac-client/status-error
                 :details {:status (:status response)
                           :body (:body response)}
                 :msg (format "Error %sing to %s Status: %d" (name method) url (:status response))
@@ -69,7 +69,7 @@
                        (-> (json/parse-string (:body response))
                            keywordize-keys)
                        (catch com.fasterxml.jackson.core.JsonParseException e
-                         (throw+ {:kind :puppetlabs.pe-clients/json-parse-error
+                         (throw+ {:kind :puppetlabs.rbac-client/json-parse-error
                                   :msg (format "Invalid JSON body: %s" (:body response))})))]
      (when (and throw-body (http-error? response))
        (throw+ (update-in parsed-body [:kind] keyword)))
