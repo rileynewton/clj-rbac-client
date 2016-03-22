@@ -7,9 +7,8 @@
    [puppetlabs.http.client.common :as http]
    [puppetlabs.http.client.sync :refer [create-client]]
    [puppetlabs.trapperkeeper.core :refer [defservice]]
-   [puppetlabs.trapperkeeper.services :refer [service-context]]
-        )
-(:import [java.util UUID]))
+   [puppetlabs.trapperkeeper.services :refer [service-context]])
+  (:import [java.util UUID]))
 
 (defn perm-str->map
   "Given a permission string of the form <object_type>:<action>:(<instance>|*),
