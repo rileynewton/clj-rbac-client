@@ -1,13 +1,13 @@
 (ns puppetlabs.rbac-client.services.rbac
   (:require
    [clojure.string]
-   [slingshot.slingshot :refer [throw+]]
-   [puppetlabs.rbac-client.core :refer [json-api-caller]]
-   [puppetlabs.rbac-client.protocols.rbac :refer [RbacConsumerService]]
    [puppetlabs.http.client.common :as http]
    [puppetlabs.http.client.sync :refer [create-client]]
+   [puppetlabs.rbac-client.core :refer [json-api-caller]]
+   [puppetlabs.rbac-client.protocols.rbac :refer [RbacConsumerService]]
    [puppetlabs.trapperkeeper.core :refer [defservice]]
-   [puppetlabs.trapperkeeper.services :refer [service-context]])
+   [puppetlabs.trapperkeeper.services :refer [service-context]]
+   [slingshot.slingshot :refer [throw+]])
   (:import [java.util UUID]))
 
 (defn perm-str->map
