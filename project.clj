@@ -14,6 +14,7 @@
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
+                 [ring/ring-core "1.4.0"]
                  [ring/ring-json  "0.3.1" :exclusions [clj-time]]
                  [slingshot "0.12.2"]
                  [puppetlabs/kitchensink ~ks-version :exclusions [joda-time clj-time]]
