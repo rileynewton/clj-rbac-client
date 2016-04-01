@@ -1,11 +1,8 @@
 (ns puppetlabs.rbac-client.core
   "This is the standard api-caller interface for talking to json apis with pe-style errors"
   (:require
-   [clojure.walk :refer [keywordize-keys]]
    [slingshot.slingshot :refer [throw+]]
-   ;[puppetlabs.http.client.sync :refer [create-client]]
    [puppetlabs.http.client.common :refer [make-request]]
-   ;[puppetlabs.certificate-authority.core :as ssl]
    [puppetlabs.kitchensink.json :as json])
   (:import [com.fasterxml.jackson.core JsonParseException]))
 
@@ -66,8 +63,7 @@
                 (:throw-body opts) (assoc :status-errors false))
          response (api-caller client base-url method path opts)
          parsed-body (try
-                       (-> (json/parse-string (:body response))
-                           keywordize-keys)
+                       (json/parse-string (:body response) true)
                        (catch com.fasterxml.jackson.core.JsonParseException e
                          (throw+ {:kind :puppetlabs.rbac-client/json-parse-error
                                   :msg (format "Invalid JSON body: %s" (:body response))})))]

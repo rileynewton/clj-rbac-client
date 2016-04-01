@@ -1,15 +1,14 @@
 (ns puppetlabs.rbac-client.services.rbac
   (:require
    [clojure.string]
-   [slingshot.slingshot :refer [throw+]]
-   [puppetlabs.rbac-client.core :refer [json-api-caller]]
-   [puppetlabs.rbac-client.protocols.rbac :refer [RbacConsumerService]]
    [puppetlabs.http.client.common :as http]
    [puppetlabs.http.client.sync :refer [create-client]]
+   [puppetlabs.rbac-client.core :refer [json-api-caller]]
+   [puppetlabs.rbac-client.protocols.rbac :refer [RbacConsumerService]]
    [puppetlabs.trapperkeeper.core :refer [defservice]]
    [puppetlabs.trapperkeeper.services :refer [service-context]]
-        )
-(:import [java.util UUID]))
+   [slingshot.slingshot :refer [throw+]])
+  (:import [java.util UUID]))
 
 (defn perm-str->map
   "Given a permission string of the form <object_type>:<action>:(<instance>|*),

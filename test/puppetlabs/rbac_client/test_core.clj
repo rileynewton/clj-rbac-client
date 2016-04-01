@@ -27,8 +27,7 @@
           app (constantly {:status 500 :body "ok"})
           port 38924]
         (is (thrown+? [:kind :puppetlabs.rbac-client/connection-failure]
-               (:body (core/api-caller client (format "http://localhost:%s/" port) :get "")))))
-    ))
+               (:body (core/api-caller client (format "http://localhost:%s/" port) :get "")))))))
 
 
 (deftest test-json-api-caller
@@ -43,8 +42,8 @@
           (is (= 1 (get-in response [:body :foo])))
           (is (= "application/json" (get-in response [:body :_request :headers :accept])))
           (is (= "/foo/bar" (get-in response [:body :_request :uri])))
-          (is (= "1" (get-in response [:body :_request :params :p])))
-          )))
+          (is (= "1" (get-in response [:body :_request :params :p]))))))
+
     (let [client (create-client {})
           app (test-server/make-json-handler {:status 400
                                               :body {:kind :invalid
@@ -54,5 +53,4 @@
         (is (thrown+? [:kind :invalid]
                       (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:throw-body true})))
         (is (thrown+? [:kind :puppetlabs.rbac-client/status-error]
-        (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true})))
-        ))))
+        (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true})))))))
