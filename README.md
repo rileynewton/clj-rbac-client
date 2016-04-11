@@ -12,7 +12,7 @@ The clients use ssl authorization vs the global.certs keys.
 
 - `global.certs.ssl-key`: the key for this clients identity.
 - `global.certs.ssl-cert`: the cert for this clients identity.
-- `global.certs.ca-cert`: the ca-cert for this clients cert and the upstream service.
+- `global.certs.ssl-ca-cert`: the ca-cert for this clients cert and the upstream service.
 
 The location of the rbac and activity services are configured with the
 `rbac-consumer.api-url` and `activity-consumer.api.url` settings respectivetly
