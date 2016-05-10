@@ -4,9 +4,10 @@ A Clojure library designed to hold lightweight api clients for pe services.
 
 ## Usage
 
-The clients are mean to provide alternate versions of the tk services. You should be able to merely include them in the bootstrap.
+The clients are meant to provide alternate versions of the TK services.
+You should be able to merely include them in the bootstrap.
 
-###Configuration
+### Configuration
 
 The clients use ssl authorization vs the global.certs keys.
 
@@ -17,10 +18,10 @@ The clients use ssl authorization vs the global.certs keys.
 The location of the rbac and activity services are configured with the
 `rbac-consumer.api-url` and `activity-consumer.api.url` settings respectivetly
 
-###Activity
+### Activity
 
 The activity service protocol should be considered temporary and unstable. It's
-unclear to me how well this matches the activityreporting service or how stable
+unclear to me how well this matches the activity reporting service or how stable
 that protocol is.
 
 ## License
