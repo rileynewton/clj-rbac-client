@@ -24,6 +24,13 @@ The activity service protocol should be considered temporary and unstable. It's
 unclear to me how well this matches the activity reporting service or how stable
 that protocol is.
 
+## Maintenance
+
+Maintainer: Dan Lidral-Porter <dlp@puppet.com>.
+
+Tickets: [Puppet Enterprise [Internal]](https://tickets.puppetlabs.com/browse/PE).
+Make sure to set the scrum team to "PE Core".
+
 ## License
 
 Copyright © 2016 Puppet
