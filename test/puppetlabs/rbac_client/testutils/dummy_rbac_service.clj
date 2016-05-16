@@ -13,7 +13,14 @@
                       (throw+ {:kind :puppetlabs.rbac/invalid-token
                                :msg (format "Token: %s" jwt-str)})
                       {:login "test_user"
-                       :id (str->uuid "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec")}))))
+                       :id (str->uuid "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec")}))
+                  (status [this level]
+                    {:service_version "1.2.12",
+                     :service_status_version 1,
+                     :detail_level "info",
+                     :state "running",
+                     :status {:db_up true,
+                              :activity_up true}})))
 
 (defservice dummy-rbac-service
   RbacConsumerService
@@ -26,4 +33,11 @@
       (throw+ {:kind :puppetlabs.rbac/invalid-token
                :msg (format "Token: %s" jwt-str)})
       {:login "test_user"
-       :id (str->uuid "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec")})))
+       :id (str->uuid "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec")}))
+  (status [this level]
+          {:service_version "1.2.12",
+           :service_status_version 1,
+           :detail_level "info",
+           :state "running",
+           :status {:db_up true,
+                    :activity_up true}}))

@@ -24,4 +24,9 @@
     5) Returns the subject.
 
     If 1, 2 or 4 fail, a slingshot exception describing the failure is
-    thrown."))
+    thrown.")
+  (status [this level]
+    "Returns the TK status map at the supplied `level`. The `state`
+    key has the most interesting information. Callers should not rely
+    on the contents of `:status`, which contains the details used to
+    compute the `:state` value."))

@@ -1,6 +1,8 @@
 (ns puppetlabs.rbac-client.testutils.http
   (:require [puppetlabs.kitchensink.json :as json]
-            [slingshot.slingshot :refer [throw+]])
+            [ring.middleware.params :refer [wrap-params]]
+            [slingshot.slingshot :refer [throw+]]
+            [puppetlabs.rbac-client.services.rbac :refer [api-url->status-url]])
   (:import [com.fasterxml.jackson.core JsonParseException]))
 
 (defn wrap-read-body
@@ -57,7 +59,8 @@
                "config map does not contain an RBAC consumer API URL")))
     (fn [req]
       (let [req-url (format "https://%s:%d%s" (:server-name req) (:server-port req) (:uri req))]
-        (when-not (.contains req-url api-url)
+        (when-not (or (.contains req-url api-url)
+                      (.contains req-url (api-url->status-url api-url)))
           (throw+ {:kind ::mismatched-urls
                    :msg (format "The request's url '%s' does not contain the RBAC API URL '%s'"
                                 req-url api-url)
@@ -71,6 +74,7 @@
   well-formed JSON requests to the same server as specified in the config."
   [handler config]
   (-> handler
+    wrap-params
     wrap-check-json
     wrap-read-body
     (wrap-check-base-url config) ))

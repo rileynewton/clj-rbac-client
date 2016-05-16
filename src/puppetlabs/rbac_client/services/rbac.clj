@@ -8,7 +8,8 @@
    [puppetlabs.trapperkeeper.core :refer [defservice]]
    [puppetlabs.trapperkeeper.services :refer [service-context]]
    [slingshot.slingshot :refer [throw+]])
-  (:import [java.util UUID]))
+  (:import [java.util UUID]
+           [java.net URL]))
 
 (defn perm-str->map
   "Given a permission string of the form <object_type>:<action>:(<instance>|*),
@@ -36,16 +37,28 @@
   ([client rbac-url method path opts]
    (json-api-caller client rbac-url method path (assoc opts :throw-body true))))
 
+(defn api-url->status-url
+  "Given an RBAC api-url, convert that to the related status URL"
+  [^String api-url]
+  (let [^URL api-url (java.net.URL. api-url)]
+    (str (.getProtocol api-url)
+         "://"
+         (.getHost api-url)
+         (when-not (= -1 (.getPort api-url))
+           (str ":" (.getPort api-url)))
+         "/status/v1/services")))
+
 (defservice remote-rbac-consumer-service
   RbacConsumerService
   [[:ConfigService get-in-config]]
 
   (init [_ tk-ctx]
-    (let [rbac-url (get-in-config [:rbac-consumer :api-url])
-          client (create-client (get-in-config [:global :certs]))]
-      (assoc tk-ctx
-             :client client
-             :rbac-client (partial rbac-client client rbac-url))))
+        (let [rbac-url (get-in-config [:rbac-consumer :api-url])
+              client (create-client (get-in-config [:global :certs]))]
+          (assoc tk-ctx
+                 :client client
+                 :rbac-client (partial rbac-client client rbac-url)
+                 :status-client (partial rbac-client client (api-url->status-url rbac-url)))))
 
   (stop [this tk-ctx]
     (if-let [client (:client tk-ctx)]
@@ -81,4 +94,9 @@
 
                           (-> (client :get url)
                               :body
-                              (update-in [:id] str->uuid)))))
+                              (update-in [:id] str->uuid))))
+
+  (status [this level]
+          (let [client (:status-client (service-context this))]
+            (-> (client :get "/" {:query-params {"level" level}})
+                (get-in [:body :rbac-service])))))
