@@ -19,7 +19,7 @@
             :msg (str "Request has a body but the 'Content-Type' header does"
                       " not include 'application/json")})})
 
-(defn- malformed-json-400-resp
+(defn malformed-json-400-resp
   [parse-error]
   {:status 400
    :headers {"Content-Type" "application/json"}
