@@ -18,7 +18,7 @@
                     {:service_version "1.2.12",
                      :service_status_version 1,
                      :detail_level "info",
-                     :state "running",
+                     :state :running,
                      :status {:db_up true,
                               :activity_up true}})))
 
@@ -38,6 +38,6 @@
           {:service_version "1.2.12",
            :service_status_version 1,
            :detail_level "info",
-           :state "running",
+           :state :running,
            :status {:db_up true,
                     :activity_up true}}))
