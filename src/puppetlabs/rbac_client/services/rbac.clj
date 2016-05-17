@@ -98,5 +98,6 @@
 
   (status [this level]
           (let [client (:status-client (service-context this))]
-            (-> (client :get "/" {:query-params {"level" level}})
-                (get-in [:body :rbac-service])))))
+            (-> (client :get "" {:query-params {"level" (name level)}})
+                (get-in [:body :rbac-service])
+                (update :state keyword)))))
