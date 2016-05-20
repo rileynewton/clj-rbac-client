@@ -77,6 +77,16 @@
     "http://foo.com/status/v1/services"
     "http://foo.com/rbac/rbac-api"))
 
+(deftest test-status-check-without-config
+  (with-app-with-config tk-app [remote-rbac-consumer-service]
+    (assoc-in (:client configs) [:rbac-consumer :api-url] nil)
+    (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)
+          handler (wrap-test-handler-middleware
+                   (fn [req]
+                     (http/json-200-resp {:foo :bar})))]
+      (with-test-webserver-and-config handler _ (:server configs)
+        (is (= :unknown (rbac/status consumer-svc "critical")))))))
+
 (deftest test-status-check
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)
