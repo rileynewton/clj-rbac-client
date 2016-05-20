@@ -21,8 +21,9 @@
      :action action
      :instance instance}))
 
-(defn str->uuid [str-uuid]
+(defn str->uuid
   "COPY-PASTE: https://github.com/puppetlabs/pe-rbac-service/blob/master/src/clj/puppetlabs/rbac/utils.clj"
+  [str-uuid]
   (try
     (UUID/fromString str-uuid)
     (catch IllegalArgumentException e
