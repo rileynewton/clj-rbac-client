@@ -85,7 +85,7 @@
                    (fn [req]
                      (http/json-200-resp {:foo :bar})))]
       (with-test-webserver-and-config handler _ (:server configs)
-        (is (= :unknown (rbac/status consumer-svc "critical")))))))
+        (is (= :unknown (:state (rbac/status consumer-svc "critical"))))))))
 
 (deftest test-status-check
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)

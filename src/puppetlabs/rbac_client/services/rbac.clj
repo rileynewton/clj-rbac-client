@@ -117,4 +117,4 @@
                 (update :state keyword))
             (do
               (log/error "'rbac-consumer' not configured with an 'api-url'")
-              :unknown))))
+              {:state :unknown}))))
