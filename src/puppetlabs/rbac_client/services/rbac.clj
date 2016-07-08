@@ -33,6 +33,11 @@
                :msg (str "Error parsing UUID " str-uuid)
                :kind ::invalid-uuid}))))
 
+(defn parse-subject
+  [subject]
+  (if subject
+    (update subject :id str->uuid)))
+
 (defn rbac-client
   "Wrap the json caller adding :throw-body to opts"
   ([client rbac-url method path] (rbac-client client rbac-url method path {}))
@@ -100,15 +105,26 @@
                          (log/error "'rbac-consumer' not configured with an 'api-url'")
                          false)))
 
+  (cert->subject [this ssl-client-cn]
+                (if-let [client (:rbac-client (service-context this))]
+                  (let [url (str "/v1/certs/" ssl-client-cn)]
+                    (-> (client :get url)
+                        :body
+                        :subject
+                        (parse-subject)))
+                  (do
+                    (log/error "'rbac-consumer' not configured with an 'api-url'")
+                    nil)))
+
   (valid-token->subject [this jwt-str]
                         (if-let [client (:rbac-client (service-context this))]
                           (let [url (str "/v1/tokens/" jwt-str)]
                             (-> (client :get url)
                                 :body
-                                (update-in [:id] str->uuid)))
+                                (parse-subject)))
                           (do
                             (log/error "'rbac-consumer' not configured with an 'api-url'")
-                            false)))
+                            nil)))
 
   (status [this level]
           (if-let [client (:status-client (service-context this))]

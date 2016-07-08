@@ -54,6 +54,15 @@
           (with-test-webserver-and-config handler _ (:server configs)
             (is (= result (rbac/cert-whitelisted? consumer-svc "foobar")))))))))
 
+(deftest test-cert->subject
+ (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
+    (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
+      (doseq [subject [rand-subject nil]]
+        (let [handler (wrap-test-handler-middleware
+                        (constantly (http/json-200-resp {:cn "foobar", :whitelisted (some? subject), :subject subject})))]
+          (with-test-webserver-and-config handler _ (:server configs)
+            (is (= subject (rbac/cert->subject consumer-svc "foobar")))))))))
+
 (deftest test-valid-token->subject
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)
@@ -77,7 +86,7 @@
     "http://foo.com/status/v1/services"
     "http://foo.com/rbac/rbac-api"))
 
-(deftest test-status-check-without-config
+(deftest test-unconfigured
   (with-app-with-config tk-app [remote-rbac-consumer-service]
     (assoc-in (:client configs) [:rbac-consumer :api-url] nil)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)
@@ -85,6 +94,11 @@
                    (fn [req]
                      (http/json-200-resp {:foo :bar})))]
       (with-test-webserver-and-config handler _ (:server configs)
+        (is (false? (rbac/is-permitted? consumer-svc {} "foo:bar:baz")))
+        (is (false? (rbac/are-permitted? consumer-svc {} ["foo:bar:baz"])))
+        (is (false? (rbac/cert-whitelisted? consumer-svc "foo.example.com")))
+        (is (nil? (rbac/cert->subject consumer-svc "foo.example.com")))
+        (is (nil? (rbac/valid-token->subject consumer-svc "")))
         (is (= :unknown (:state (rbac/status consumer-svc "critical"))))))))
 
 (deftest test-status-check

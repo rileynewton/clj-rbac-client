@@ -11,8 +11,12 @@
     responses.")
 
   (cert-whitelisted? [this ssl-client-cn]
-    "Given an ssh client CN string, returns whether or not that CN is on RBAC's
+    "Given an SSL client CN string, returns whether or not that CN is on RBAC's
     certificate whitelist.")
+
+  (cert->subject [this ssl-client-cn]
+     "Given an SSL client CN string, returns the subject associated with that
+     CN, or nil if no subject is associated.")
 
   (valid-token->subject [this jwt-str]
     "Given a JWT string, this function:
