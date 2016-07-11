@@ -1,7 +1,8 @@
 (ns puppetlabs.rbac-client.middleware.authentication
   (:require [clojure.tools.logging :as log]
             [puppetlabs.kitchensink.json :as json]
-            [puppetlabs.rbac-client.protocols.rbac :refer [valid-token->subject cert-whitelisted?]]
+            [puppetlabs.rbac-client.protocols.rbac :refer [valid-token->subject cert->subject]]
+            [puppetlabs.ring-middleware.core :refer [wrap-with-certificate-cn]]
             [puppetlabs.trapperkeeper.services :refer [service-context]]
             [ring.util.response :as ring-resp]
             [schema.core :as sc]
@@ -10,6 +11,13 @@
 (def ^:private ^:const authn-header "x-authentication")
 (def ^:private ^:const authn-param "token")
 (def ^:private ^:const internal-subject-key ::rbac-subject)
+
+(defn- ssl?
+  "Checks whether a given ring request is using ssl by checking its
+  scheme and ssl-client-cert keys."
+  [request]
+  (and (= :https (:scheme request))
+       (some? (:ssl-client-cert request))))
 
 (defn- token-from-request
   "Given a ring request map, return the JWT token string found in the
@@ -63,6 +71,31 @@
         ;; No token? Continue without setting a subject.
         (handler req)))))
 
+(defn- wrap-cert-access*
+  "This middleware takes the RBAC Consumer Service and wraps the given ring
+  handler with a cert authentication check. If the incoming request is SSL and
+  signed with a known cert, a subject key for the corresponding user is added
+  to the request. If the request is not SSL or not properly signed, the handler
+  passes on the request and will eventually be caught by the anonymous access
+  blocking middleware.
+
+  Note that this should not be used directly, but rather via the authn
+  middleware stack functions defined below that ensure the combination of this
+  middleware with wrap-block-anonymous-access."
+  [rbac-svc handler]
+  (fn [{:keys [ssl-client-cn] :as req}]
+    (if (ssl? req)
+      (if-let [subject (cert->subject rbac-svc ssl-client-cn)]
+        (do
+          (log/debugf "Authenticated user '%s' with cert CN=%s" (:login subject) ssl-client-cn)
+          (handler (assoc req internal-subject-key subject)))
+        (do
+          (log/warnf "Certificate access middleware could not authenticate user with cert CN=%s" ssl-client-cn)
+          (handler req)))
+      (do
+        (log/debug "Certificate access middleware called, but received a non-ssl request.")
+        (handler req)))))
+
 (def ^:private RbacSubject
   {:id java.util.UUID
    :login sc/Str
@@ -105,3 +138,13 @@
   (->> handler
        wrap-block-anonymous-access
        (wrap-token-access* rbac-svc)))
+
+(defn wrap-token-and-cert-access
+  "A middleware that permits route access by both authentication tokens and
+  whitelisted SSL certs. Takes an Rbac Consumer Service and a ring handler."
+  [rbac-svc handler]
+  (->> handler
+       wrap-block-anonymous-access
+       (wrap-token-access* rbac-svc)
+       (wrap-cert-access* rbac-svc)
+       wrap-with-certificate-cn))

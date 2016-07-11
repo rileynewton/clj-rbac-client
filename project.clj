@@ -16,6 +16,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [ring/ring-core "1.4.0"]
                  [ring/ring-json  "0.3.1" :exclusions [clj-time]]
+                 [puppetlabs/ring-middleware "0.2.2" :exclusions [ring/ring-servlet hiccup]]
                  [slingshot "0.12.2"]
                  [puppetlabs/kitchensink ~ks-version :exclusions [joda-time clj-time]]
                  [puppetlabs/http-client "0.5.0"]
@@ -23,7 +24,8 @@
 
                  ;; these dependencies are only here to override transitive dependency version conflicts
                  [org.clojure/tools.reader "1.0.0-alpha1"]
-                 [commons-codec "1.9"]]
+                 [commons-codec "1.9"]
+                 [puppetlabs/ssl-utils "0.8.1"]]
   :pedantic? :abort
   :profiles {:test {:dependencies [[puppetlabs/kitchensink ~ks-version :classifier "test"]
                                    [puppetlabs/trapperkeeper ~tk-version :classifier "test" :exclusions [joda-time clj-time]]

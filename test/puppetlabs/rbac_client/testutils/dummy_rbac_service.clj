@@ -28,6 +28,9 @@
   (is-permitted? [this subject perm-str] true)
   (are-permitted? [this subject perm-strs] true)
   (cert-whitelisted? [this ssl-client-cn] true)
+  (cert->subject [this ssl-client-cn]
+    {:id #uuid "af94921f-bd76-4b58-b5ce-e17c029a2790"
+     :login "api_user"})
   (valid-token->subject [this jwt-str]
     (if (or (not jwt-str) (= "invalid-token" jwt-str))
       (throw+ {:kind :puppetlabs.rbac/invalid-token
