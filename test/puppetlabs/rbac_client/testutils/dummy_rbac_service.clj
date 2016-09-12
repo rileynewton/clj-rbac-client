@@ -6,7 +6,8 @@
 
 (def dummy-rbac (reify RbacConsumerService
                   (is-permitted? [this subject perm-str] true)
-                  (are-permitted? [this subject perm-strs] true)
+                  (are-permitted? [this subject perm-strs]
+                    (vec (repeat (count perm-strs) true)))
                   (cert-whitelisted? [this ssl-client-cn] true)
                   (valid-token->subject [this jwt-str]
                     (if (or (not jwt-str) (= "invalid-token" jwt-str))
@@ -26,7 +27,8 @@
   RbacConsumerService
   []
   (is-permitted? [this subject perm-str] true)
-  (are-permitted? [this subject perm-strs] true)
+  (are-permitted? [this subject perm-strs]
+                  (vec (repeat (count perm-strs) true)))
   (cert-whitelisted? [this ssl-client-cn] true)
   (cert->subject [this ssl-client-cn]
     {:id #uuid "af94921f-bd76-4b58-b5ce-e17c029a2790"

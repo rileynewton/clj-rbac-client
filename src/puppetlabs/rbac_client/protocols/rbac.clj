@@ -7,7 +7,7 @@
 
   (are-permitted? [this subject perm-strs]
     "Given an RbacSubject map and a list of permission strings of the form
-    \"object_type:action:instance\", returns a corresponding list of boolean
+    \"object_type:action:instance\", returns a corresponding vector of boolean
     responses.")
 
   (cert-whitelisted? [this ssl-client-cn]
