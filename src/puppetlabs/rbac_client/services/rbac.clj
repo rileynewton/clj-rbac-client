@@ -66,7 +66,8 @@
                    :client client
                    :rbac-client (partial rbac-client client rbac-url)
                    :status-client (partial rbac-client client (api-url->status-url rbac-url))))
-          tk-ctx))
+          (throw+ {:kind :puppetlabs.rbac-client/invalid-configuration
+                   :message "'rbac-consumer' not configured with an 'api-url'"})))
 
   (stop [this tk-ctx]
     (when-let [client (:client tk-ctx)]
@@ -74,63 +75,44 @@
     (dissoc tk-ctx :client))
 
   (is-permitted? [this subject perm-str]
-                 (if-let [client (:rbac-client (service-context this))]
-                   (let [body {:token (str (:id subject))
-                               :permissions [(perm-str->map perm-str)]}
-                         response (client :post "/v1/permitted" {:body body})]
-                     (-> response
-                         :body
-                         first))
-                   (do
-                     (log/error "'rbac-consumer' not configured with an 'api-url'")
-                     false)))
+                 (let [{:keys [rbac-client]} (service-context this)
+                       body {:token (str (:id subject))
+                             :permissions [(perm-str->map perm-str)]}]
+                   (-> (rbac-client :post "/v1/permitted" {:body body})
+                       :body
+                       first)))
 
   (are-permitted? [this subject perm-strs]
-                  (if-let [client (:rbac-client (service-context this))]
-                    (let [body {:token (str (:id subject))
-                                :permissions (map perm-str->map perm-strs)}
-                          response (client :post "/v1/permitted" {:body body})]
-                      (:body response))
-                    (do
-                      (log/error "'rbac-consumer' not configured with an 'api-url'")
-                      false)))
+                  (let [{:keys [rbac-client]} (service-context this)
+                        body {:token (str (:id subject))
+                              :permissions (map perm-str->map perm-strs)}]
+                    (-> (rbac-client :post "/v1/permitted" {:body body})
+                        :body)))
 
   (cert-whitelisted? [this ssl-client-cn]
-                     (if-let [client (:rbac-client (service-context this))]
-                       (let [url (str "/v1/certs/" ssl-client-cn)]
-                         (-> (client :get url)
-                             :body
-                             :whitelisted))
-                       (do
-                         (log/error "'rbac-consumer' not configured with an 'api-url'")
-                         false)))
+                     (let [{:keys [rbac-client]} (service-context this)
+                           url (str "/v1/certs/" ssl-client-cn)]
+                       (-> (rbac-client :get url)
+                           :body
+                           :whitelisted)))
 
   (cert->subject [this ssl-client-cn]
-                (if-let [client (:rbac-client (service-context this))]
-                  (let [url (str "/v1/certs/" ssl-client-cn)]
-                    (-> (client :get url)
-                        :body
-                        :subject
-                        (parse-subject)))
-                  (do
-                    (log/error "'rbac-consumer' not configured with an 'api-url'")
-                    nil)))
+                 (let [{:keys [rbac-client]} (service-context this)
+                       url (str "/v1/certs/" ssl-client-cn)]
+                   (-> (rbac-client :get url)
+                       :body
+                       :subject
+                       (parse-subject))))
 
   (valid-token->subject [this jwt-str]
-                        (if-let [client (:rbac-client (service-context this))]
-                          (let [url (str "/v1/tokens/" jwt-str)]
-                            (-> (client :get url)
-                                :body
-                                (parse-subject)))
-                          (do
-                            (log/error "'rbac-consumer' not configured with an 'api-url'")
-                            nil)))
+                        (let [{:keys [rbac-client]} (service-context this)
+                              url (str "/v1/tokens/" jwt-str)]
+                          (-> (rbac-client :get url)
+                              :body
+                              (parse-subject))))
 
   (status [this level]
-          (if-let [client (:status-client (service-context this))]
-            (-> (client :get "" {:query-params {"level" (name level)}})
+          (let [{:keys [status-client]} (service-context this)]
+            (-> (status-client :get "" {:query-params {"level" (name level)}})
                 (get-in [:body :rbac-service])
-                (update :state keyword))
-            (do
-              (log/error "'rbac-consumer' not configured with an 'api-url'")
-              {:state :unknown}))))
+                (update :state keyword)))))

@@ -6,7 +6,10 @@
             [puppetlabs.rbac-client.services.rbac :refer [remote-rbac-consumer-service api-url->status-url]]
             [puppetlabs.rbac-client.testutils.config :as cfg]
             [puppetlabs.rbac-client.testutils.http :as http]
+            [puppetlabs.trapperkeeper.logging :refer [reset-logging]]
+            [puppetlabs.trapperkeeper.testutils.logging :refer [with-test-logging]]
             [puppetlabs.trapperkeeper.app :as tk-app]
+            [slingshot.test]
             [puppetlabs.trapperkeeper.testutils.bootstrap :refer [with-app-with-config]]
             [puppetlabs.trapperkeeper.testutils.webserver :refer [with-test-webserver-and-config]])
   (:import [java.util UUID]))
@@ -87,19 +90,13 @@
     "http://foo.com/rbac/rbac-api"))
 
 (deftest test-unconfigured
-  (with-app-with-config tk-app [remote-rbac-consumer-service]
-    (assoc-in (:client configs) [:rbac-consumer :api-url] nil)
-    (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)
-          handler (wrap-test-handler-middleware
-                   (fn [req]
-                     (http/json-200-resp {:foo :bar})))]
-      (with-test-webserver-and-config handler _ (:server configs)
-        (is (false? (rbac/is-permitted? consumer-svc {} "foo:bar:baz")))
-        (is (false? (rbac/are-permitted? consumer-svc {} ["foo:bar:baz"])))
-        (is (false? (rbac/cert-whitelisted? consumer-svc "foo.example.com")))
-        (is (nil? (rbac/cert->subject consumer-svc "foo.example.com")))
-        (is (nil? (rbac/valid-token->subject consumer-svc "")))
-        (is (= :unknown (:state (rbac/status consumer-svc "critical"))))))))
+  (reset-logging)
+  (with-test-logging
+    (is (thrown+-with-msg? [:kind :puppetlabs.rbac-client/invalid-configuration]
+                           #"'rbac-consumer' not configured with an 'api-url'"
+          (with-app-with-config tk-app [remote-rbac-consumer-service]
+            (assoc-in (:client configs) [:rbac-consumer :api-url] nil)
+            nil)))))
 
 (deftest test-status-check
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
