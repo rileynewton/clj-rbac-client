@@ -1,7 +1,6 @@
 (ns puppetlabs.rbac-client.services.rbac
   (:require
    [clojure.string]
-   [clojure.tools.logging :as log]
    [puppetlabs.http.client.common :as http]
    [puppetlabs.http.client.sync :refer [create-client]]
    [puppetlabs.rbac-client.core :refer [json-api-caller]]
@@ -36,7 +35,12 @@
 (defn parse-subject
   [subject]
   (if subject
-    (update subject :id str->uuid)))
+    (-> subject
+        (select-keys [:id :login :display_name :email
+                      :last_login :role_ids :inherited_role_ids
+                      :group_ids :is_superuser :is_revoked
+                      :is_remote :is_group])
+        (update :id str->uuid))))
 
 (defn rbac-client
   "Wrap the json caller adding :throw-body to opts"
@@ -104,9 +108,9 @@
                        :subject
                        (parse-subject))))
 
-  (valid-token->subject [this jwt-str]
+  (valid-token->subject [this token-str]
                         (let [{:keys [rbac-client]} (service-context this)
-                              url (str "/v1/tokens/" jwt-str)]
+                              url (str "/v1/tokens/" token-str)]
                           (-> (rbac-client :get url)
                               :body
                               (parse-subject))))
