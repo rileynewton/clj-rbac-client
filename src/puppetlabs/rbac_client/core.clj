@@ -31,7 +31,6 @@
          opts (-> opts
                   (dissoc :status-errors)
                   (#(merge {:as :text} %)))
-         pe-errors? (dissoc opts)
          url (str base-url path)
          response (try
                     (make-request client url method opts)
