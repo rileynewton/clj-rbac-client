@@ -110,8 +110,9 @@
 
   (valid-token->subject [this token-str]
                         (let [{:keys [rbac-client]} (service-context this)
-                              url (str "/v1/tokens/" token-str)]
-                          (-> (rbac-client :get url)
+                              payload {:token token-str
+                                       :update_last_activity? true}]
+                          (-> (rbac-client :post "/v2/token/authenticate" {:body payload})
                               :body
                               (parse-subject))))
 
