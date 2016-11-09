@@ -112,7 +112,7 @@
                         (let [{:keys [rbac-client]} (service-context this)
                               payload {:token token-str
                                        :update_last_activity? true}]
-                          (-> (rbac-client :post "/v2/token/authenticate" {:body payload})
+                          (-> (rbac-client :post "/v2/auth/token/authenticate" {:body payload})
                               :body
                               (parse-subject))))
 
