@@ -1,3 +1,5 @@
+### 0.5.1
+  * Update the url for the v2 /auth/token/authenticate endpoint to be the correct one
 ### 0.5.0
   * Update valid-token->subject to query the v2 token/authenticate endpoint, to
     enable updates to the last_active timestamp for timeout-based token
