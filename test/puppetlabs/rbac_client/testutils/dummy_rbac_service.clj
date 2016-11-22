@@ -37,8 +37,10 @@
     (if (or (not jwt-str) (= "invalid-token" jwt-str))
       (throw+ {:kind :puppetlabs.rbac/invalid-token
                :msg (format "Token: %s" jwt-str)})
-      {:login "test_user"
-       :id (str->uuid "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec")}))
+      {:login     "test_user"
+       :id        (str->uuid "751a8f7e-b53a-4ccd-9f4f-e93db6aa38ec")
+       :group_ids ["aaaaaaaa-b53a-4ccd-9f4f-e93db6aa38ec"
+                   "bbbbbbbb-b53a-4ccd-9f4f-e93db6aa38ec"]}))
   (status [this level]
           {:service_version "1.2.12",
            :service_status_version 1,
