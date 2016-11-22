@@ -32,6 +32,12 @@
                :msg (str "Error parsing UUID " str-uuid)
                :kind ::invalid-uuid}))))
 
+(defn group-ids-str->uuids
+  [subject-map]
+  (if-let [group-ids (:group_ids subject-map)]
+    (assoc subject-map :group_ids (map str->uuid group-ids))
+    subject-map))
+
 (defn parse-subject
   [subject]
   (if subject
@@ -40,6 +46,7 @@
                       :last_login :role_ids :inherited_role_ids
                       :group_ids :is_superuser :is_revoked
                       :is_remote :is_group])
+        group-ids-str->uuids
         (update :id str->uuid))))
 
 (defn rbac-client
