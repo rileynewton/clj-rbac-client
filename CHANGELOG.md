@@ -1,3 +1,5 @@
+### 0.5.2
+  * Incorporates a bug fix from the 0.4.2 release
 ### 0.5.1
   * Update the url for the v2 /auth/token/authenticate endpoint to be the correct one
 ### 0.5.0
