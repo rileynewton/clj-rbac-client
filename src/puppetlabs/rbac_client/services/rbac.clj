@@ -1,6 +1,7 @@
 (ns puppetlabs.rbac-client.services.rbac
   (:require
    [clojure.string]
+   [puppetlabs.i18n.core :as i18n]
    [puppetlabs.http.client.common :as http]
    [puppetlabs.http.client.sync :refer [create-client]]
    [puppetlabs.rbac-client.core :refer [json-api-caller]]
@@ -29,7 +30,7 @@
     (catch IllegalArgumentException e
       (throw+ {:uuid str-uuid
                ;; DOCS REVIEWED
-               :msg (str "Error parsing UUID " str-uuid)
+               :msg (i18n/tru "Error parsing UUID {0}" str-uuid)
                :kind ::invalid-uuid}))))
 
 (defn group-ids-str->uuids
@@ -78,7 +79,7 @@
                    :rbac-client (partial rbac-client client rbac-url)
                    :status-client (partial rbac-client client (api-url->status-url rbac-url))))
           (throw+ {:kind :puppetlabs.rbac-client/invalid-configuration
-                   :message "'rbac-consumer' not configured with an 'api-url'"})))
+                   :message (i18n/tru "''rbac-consumer'' not configured with an ''api-url''")})))
 
   (stop [this tk-ctx]
     (when-let [client (:client tk-ctx)]

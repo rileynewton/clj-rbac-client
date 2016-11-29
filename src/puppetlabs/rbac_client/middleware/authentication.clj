@@ -1,6 +1,7 @@
 (ns puppetlabs.rbac-client.middleware.authentication
   (:require [clojure.tools.logging :as log]
             [puppetlabs.kitchensink.json :as json]
+            [puppetlabs.i18n.core :as i18n]
             [puppetlabs.rbac-client.protocols.rbac :refer [valid-token->subject cert->subject]]
             [puppetlabs.ring-middleware.core :refer [wrap-with-certificate-cn]]
             [puppetlabs.trapperkeeper.services :refer [service-context]]
@@ -63,8 +64,8 @@
       (if-let [token-str (token-from-request req)]
         (try+
           (let [subject (valid-token->subject rbac-svc token-str)]
-            (log/infof "Authenticated subject %s (%s) via authentication token"
-                       (:login subject) (:id subject))
+            (log/info (i18n/trs "Authenticated subject {0} ({1}) via authentication token"
+                                (:login subject) (:id subject)))
             (handler (assoc req internal-subject-key subject)))
           (catch authn-error? e
             (build-response 401 e)))
@@ -87,13 +88,14 @@
     (if (ssl? req)
       (if-let [subject (cert->subject rbac-svc ssl-client-cn)]
         (do
-          (log/debugf "Authenticated user '%s' with cert CN=%s" (:login subject) ssl-client-cn)
+          (log/debug (i18n/trs "Authenticated user ''{0}'' with cert CN={1}"
+                               (:login subject) ssl-client-cn))
           (handler (assoc req internal-subject-key subject)))
         (do
-          (log/warnf "Certificate access middleware could not authenticate user with cert CN=%s" ssl-client-cn)
+          (log/warn (i18n/trs "Certificate access middleware could not authenticate user with cert CN={0}" ssl-client-cn))
           (handler req)))
       (do
-        (log/debug "Certificate access middleware called, but received a non-ssl request.")
+        (log/debug (i18n/trs "Certificate access middleware called, but received a non-ssl request."))
         (handler req)))))
 
 (def ^:private RbacSubject
@@ -128,7 +130,7 @@
         (sc/validate RbacSubject subject)
         (handler (assoc req :subject subject)))
       (build-response 401 {:kind :puppetlabs.rbac/user-unauthenticated
-                           :msg "Route requires authentication"}))))
+                           :msg (i18n/tru "Route requires authentication")}))))
 
 (defn wrap-token-only-access
   "This middleware should be applied to ring handlers that want to allow *only*
