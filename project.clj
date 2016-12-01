@@ -1,6 +1,7 @@
 (def ks-version "1.3.0")
 (def tk-version "1.3.1")
 (def tk-jetty-version "1.5.0")
+(def i18n-version "0.4.3")
 
 (defn deploy-info
   [url]
@@ -25,7 +26,10 @@
                  ;; these dependencies are only here to override transitive dependency version conflicts
                  [org.clojure/tools.reader "1.0.0-beta1"]
                  [commons-codec "1.9"]
-                 [puppetlabs/ssl-utils "0.8.1"]]
+                 [puppetlabs/ssl-utils "0.8.1"]
+                 [puppetlabs/i18n ~i18n-version]]
+
+  :plugins [[puppetlabs/i18n ~i18n-version]]
   :pedantic? :abort
   :profiles {:test {:dependencies [[puppetlabs/kitchensink ~ks-version :classifier "test"]
                                    [puppetlabs/trapperkeeper ~tk-version :classifier "test" :exclusions [joda-time clj-time]]

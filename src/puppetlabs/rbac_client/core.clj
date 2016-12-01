@@ -2,6 +2,7 @@
   "This is the standard api-caller interface for talking to json apis with pe-style errors"
   (:require
    [slingshot.slingshot :refer [throw+]]
+   [puppetlabs.i18n.core :as i18n]
    [puppetlabs.http.client.common :refer [make-request]]
    [puppetlabs.kitchensink.json :as json])
   (:import [com.fasterxml.jackson.core JsonParseException]))
@@ -37,12 +38,12 @@
                     (catch java.net.ConnectException e
                       (throw+ {:kind :puppetlabs.rbac-client/connection-failure
                                :details {:exception (.toString e)}
-                               :msg (str "Could not connect to server with " url)})))]
+                               :msg (i18n/tru "Could not connect to server with {0}" url)})))]
      (if (and throw-rest-errors (http-error? response))
        (throw+ {:kind :puppetlabs.rbac-client/status-error
                 :details {:status (:status response)
                           :body (:body response)}
-                :msg (format "Error %sing to %s Status: %d" (name method) url (:status response))
+                :msg (i18n/tru "Error executing {0} to {1} Status: {2,number,#}" (name method) url (:status response))
                 :response (dissoc response :opts)}))
        response)))
 
@@ -72,7 +73,7 @@
                        (json/parse-string (:body response) true)
                        (catch com.fasterxml.jackson.core.JsonParseException e
                          (throw+ {:kind :puppetlabs.rbac-client/json-parse-error
-                                  :msg (format "Invalid JSON body: %s" (:body response))})))]
+                                  :msg (i18n/tru "Invalid JSON body: {0}" (:body response))})))]
      (when (and throw-body (http-error? response))
        (throw+ (update-in parsed-body [:kind] keyword)))
      (assoc response :body parsed-body))))
