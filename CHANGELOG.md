@@ -1,3 +1,7 @@
+### 0.5.4
+  * update to clj-parent 0.2.5 to use clj-http 0.7.0 for i18n support
+### 0.5.3
+  * use clj-parent 0.2.4 for dependency versioning
 ### 0.5.2
   * Incorporates a bug fix from the 0.4.2 release
 ### 0.5.1
