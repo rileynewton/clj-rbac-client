@@ -1,3 +1,6 @@
+### 0.5.5
+  * fix dummy service to return uuids instead of strings
+  
 ### 0.5.4
   * update to clj-parent 0.2.5 to use clj-http 0.7.0 for i18n support
   
