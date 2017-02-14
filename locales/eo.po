@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Puppet <docs@puppet.com>
+# This file is distributed under the same license as the puppetlabs.rbac_client package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: puppetlabs.rbac_client\n"
+"Report-Msgid-Bugs-To: docs@puppet.com\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+
+#: src/puppetlabs/rbac_client/core.clj
+msgid "Could not connect to server with {0}"
+msgstr "[Ƈǿŭŀḓ ƞǿŧ ƈǿƞƞḗƈŧ ŧǿ şḗřṽḗř ẇīŧħ {0} ǅſſẛ鶱 ςϕς]"
+
+#: src/puppetlabs/rbac_client/core.clj
+msgid "Error executing {0} to {1} Status: {2,number,#}"
+msgstr "[Ḗřřǿř ḗẋḗƈŭŧīƞɠ {0} ŧǿ {1} Şŧȧŧŭş: {2,ƞŭḿƀḗř,#} 衋衋ıϱϱ 靐衋ϰǋ]"
+
+#: src/puppetlabs/rbac_client/core.clj
+msgid "Invalid JSON body: {0}"
+msgstr "[Īƞṽȧŀīḓ ĴŞǾȠ ƀǿḓẏ: {0} ſϰςϰϐſǈ ǈ鶱ς]"
+
+#: src/puppetlabs/rbac_client/middleware/authentication.clj
+msgid "Authenticated subject {0} ({1}) via authentication token"
+msgstr "[Ȧŭŧħḗƞŧīƈȧŧḗḓ şŭƀĵḗƈŧ {0} ({1}) ṽīȧ ȧŭŧħḗƞŧīƈȧŧīǿƞ ŧǿķḗƞ ϕϕςǈẛǈ靐ǈ]"
+
+#: src/puppetlabs/rbac_client/middleware/authentication.clj
+msgid "Authenticated user ''{0}'' with cert CN={1}"
+msgstr "[Ȧŭŧħḗƞŧīƈȧŧḗḓ ŭşḗř ''{0}'' ẇīŧħ ƈḗřŧ ƇȠ={1} ϕẛΐϵẛϕ靐靐ϰϰ]"
+
+#: src/puppetlabs/rbac_client/middleware/authentication.clj
+msgid ""
+"Certificate access middleware could not authenticate user with cert CN={0}"
+msgstr ""
+"[Ƈḗřŧīƒīƈȧŧḗ ȧƈƈḗşş ḿīḓḓŀḗẇȧřḗ ƈǿŭŀḓ ƞǿŧ ȧŭŧħḗƞŧīƈȧŧḗ ŭşḗř ẇīŧħ ƈḗřŧ ƇȠ={0} "
+"ǅǈϵϑǅǅϰϑϐ靐ǲ]"
+
+#: src/puppetlabs/rbac_client/middleware/authentication.clj
+msgid "Certificate access middleware called, but received a non-ssl request."
+msgstr ""
+"[Ƈḗřŧīƒīƈȧŧḗ ȧƈƈḗşş ḿīḓḓŀḗẇȧřḗ ƈȧŀŀḗḓ, ƀŭŧ řḗƈḗīṽḗḓ ȧ ƞǿƞ-şşŀ řḗɋŭḗşŧ. "
+"ϰǲẛϕΰ靐ǋıǈϱ]"
+
+#: src/puppetlabs/rbac_client/middleware/authentication.clj
+msgid "Route requires authentication"
+msgstr "[Řǿŭŧḗ řḗɋŭīřḗş ȧŭŧħḗƞŧīƈȧŧīǿƞ ς衋靐ǈẛ ǲΰϖǅǈ]"
+
+#. DOCS REVIEWED
+#: src/puppetlabs/rbac_client/services/rbac.clj
+msgid "Error parsing UUID {0}"
+msgstr "[Ḗřřǿř ƥȧřşīƞɠ ŬŬĪḒ {0} ϵ鶱ΰϕǋ ϕǲǋϕϐ]"
+
+#: src/puppetlabs/rbac_client/services/rbac.clj
+msgid "''rbac-consumer'' not configured with an ''api-url''"
+msgstr "[''řƀȧƈ-ƈǿƞşŭḿḗř'' ƞǿŧ ƈǿƞƒīɠŭřḗḓ ẇīŧħ ȧƞ ''ȧƥī-ŭřŀ'' ſſϐϖẛϵς]"
