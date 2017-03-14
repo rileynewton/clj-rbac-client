@@ -118,8 +118,9 @@
 
   (valid-token->subject [this token-str]
                         (let [{:keys [rbac-client]} (service-context this)
-                              payload {:token token-str
-                                       :update_last_activity? true}]
+                              [with-suffix? actual-token _] (re-matches #"(.*)\|no_keepalive" token-str)
+                              payload {:token (if with-suffix? actual-token token-str)
+                                       :update_last_activity? (not with-suffix?)}]
                           (-> (rbac-client :post "/v2/auth/token/authenticate" {:body payload})
                               :body
                               (parse-subject))))

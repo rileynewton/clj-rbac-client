@@ -24,10 +24,10 @@
                  [puppetlabs/i18n]]
 
   :pedantic? :abort
-  :profiles {:test {:dependencies [[puppetlabs/kitchensink :classifier "test"]
-                                   [puppetlabs/trapperkeeper :classifier "test"]
-                                   [puppetlabs/trapperkeeper-webserver-jetty9]
-                                   [puppetlabs/trapperkeeper-webserver-jetty9 :classifier "test"]]}
+  :profiles {:dev {:dependencies [[puppetlabs/kitchensink :classifier "test"]
+                                  [puppetlabs/trapperkeeper :classifier "test"]
+                                  [puppetlabs/trapperkeeper-webserver-jetty9]
+                                  [puppetlabs/trapperkeeper-webserver-jetty9 :classifier "test"]]}
              :testutils {:source-paths ^:replace  ["test"]}}
 
   :plugins [[lein-parent "0.3.1"]]

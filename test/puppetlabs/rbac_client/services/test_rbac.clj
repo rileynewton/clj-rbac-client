@@ -69,11 +69,29 @@
 (deftest test-valid-token->subject
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)
+          !last-request (atom nil)
           handler (wrap-test-handler-middleware
-                    (constantly (http/json-200-resp rand-subject)))]
+                    (fn [req]
+                      (reset! !last-request req)
+                      (http/json-200-resp rand-subject)))]
 
       (with-test-webserver-and-config handler _ (:server configs)
-        (is (= rand-subject (rbac/valid-token->subject consumer-svc "token")))))))
+        (testing "valid-token->subject"
+          (let [returned-subject (rbac/valid-token->subject consumer-svc "token")
+                {:keys [update_last_activity?]} (-> @!last-request
+                                                 :body
+                                                 (json/parse-string true))]
+            (testing "returns the expected subject"
+              (is (= rand-subject returned-subject)))
+            (testing "updates the token's activity"
+              (is (true? update_last_activity?))))
+
+          (testing "doesn't update activity when the token is suffixed with '|no_keepalive'"
+            (let [_ (rbac/valid-token->subject consumer-svc "token|no_keepalive")
+                  {:keys [update_last_activity?]} (-> @!last-request
+                                                  :body
+                                                  (json/parse-string true))]
+              (is (false? update_last_activity?)))))))))
 
 (deftest test-status-url
   (are [service-url rbac-api-url] (= service-url (api-url->status-url rbac-api-url))
