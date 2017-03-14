@@ -1,3 +1,7 @@
+### 0.6.0
+  * Allow tokens to be passed to `valid-token->subject` with `|no_keepalive` suffix to avoid
+    updating `last_active` time.
+
 ### 0.5.5
   * fix dummy service to return uuids instead of strings
   
