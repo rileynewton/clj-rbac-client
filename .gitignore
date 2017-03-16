@@ -10,3 +10,4 @@ pom.xml.asc
 .hgignore
 .hg/
 /resources/locales.clj
+/dev-resources/i18n/bin

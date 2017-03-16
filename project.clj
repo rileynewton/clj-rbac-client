@@ -21,7 +21,8 @@
                  [puppetlabs/kitchensink]
                  [puppetlabs/http-client]
                  [puppetlabs/trapperkeeper]
-                 [puppetlabs/i18n]]
+                 ;; remove version when moving to clj-parent 0.5+
+                 [puppetlabs/i18n "0.7.0"]]
 
   :pedantic? :abort
   :profiles {:dev {:dependencies [[puppetlabs/kitchensink :classifier "test"]
@@ -30,7 +31,8 @@
                                   [puppetlabs/trapperkeeper-webserver-jetty9 :classifier "test"]]}
              :testutils {:source-paths ^:replace  ["test"]}}
 
-  :plugins [[lein-parent "0.3.1"]]
+  :plugins [[lein-parent "0.3.1"]
+            [puppetlabs/i18n "0.7.0"]]
 
   :classifiers  [["test" :testutils]]
 
