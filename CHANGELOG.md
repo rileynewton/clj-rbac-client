@@ -1,5 +1,5 @@
 ### 0.6.1
-  * Update i18n to 0.7.0 for pot file renaming
+  * Update to clj-parent 0.4.2 to pickup i18n 0.7.0 for pot file renaming
 
 ### 0.6.0
   * Allow tokens to be passed to `valid-token->subject` with `|no_keepalive` suffix to avoid
