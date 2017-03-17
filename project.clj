@@ -10,7 +10,7 @@
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
 
-  :parent-project {:coords [puppetlabs/clj-parent "0.4.1"]
+  :parent-project {:coords [puppetlabs/clj-parent "0.4.2"]
                    :inherit [:managed-dependencies]}
 
   :dependencies [[org.clojure/clojure]
@@ -21,8 +21,7 @@
                  [puppetlabs/kitchensink]
                  [puppetlabs/http-client]
                  [puppetlabs/trapperkeeper]
-                 ;; remove version when moving to clj-parent 0.5+
-                 [puppetlabs/i18n "0.7.0"]]
+                 [puppetlabs/i18n]]
 
   :pedantic? :abort
   :profiles {:dev {:dependencies [[puppetlabs/kitchensink :classifier "test"]
