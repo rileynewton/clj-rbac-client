@@ -10,7 +10,7 @@
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
 
-  :parent-project {:coords [puppetlabs/clj-parent "0.4.2"]
+  :parent-project {:coords [puppetlabs/clj-parent "0.6.1"]
                    :inherit [:managed-dependencies]}
 
   :dependencies [[org.clojure/clojure]
@@ -31,7 +31,7 @@
              :testutils {:source-paths ^:replace  ["test"]}}
 
   :plugins [[lein-parent "0.3.1"]
-            [puppetlabs/i18n "0.7.0"]]
+            [puppetlabs/i18n "0.8.0"]]
 
   :classifiers  [["test" :testutils]]
 
