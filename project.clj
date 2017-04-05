@@ -5,7 +5,7 @@
    :password :env/nexus_jenkins_password
    :sign-releases false})
 
-(defproject puppetlabs/rbac-client "0.6.3-SNAPSHOT"
+(defproject puppetlabs/rbac-client "0.7.0-SNAPSHOT"
   :description "Tools for interacting with PE RBAC"
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
