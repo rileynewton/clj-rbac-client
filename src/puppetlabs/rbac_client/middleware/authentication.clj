@@ -64,8 +64,8 @@
       (if-let [token-str (token-from-request req)]
         (try+
           (let [subject (valid-token->subject rbac-svc token-str)]
-            (log/info (i18n/trs "Authenticated subject {0} ({1}) via authentication token"
-                                (:login subject) (:id subject)))
+            (log/debug (i18n/trs "Authenticated subject {0} ({1}) via authentication token"
+                                 (:login subject) (:id subject)))
             (handler (assoc req internal-subject-key subject)))
           (catch authn-error? e
             (build-response 401 e)))
