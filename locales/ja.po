@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: docs@puppet.com\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: LarissaLane <larissa@puppet.com>, 2017\n"
+"Last-Translator: sayaka inagaki <sayaka-inagaki@to-in.co.jp>, 2017\n"
 "Language-Team: Japanese (Japan) (https://www.transifex.com/puppet/teams/59186/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -41,7 +41,7 @@ msgstr "cert CN={1}のユーザー''{0}'' を認証しました"
 #: src/puppetlabs/rbac_client/middleware/authentication.clj
 msgid ""
 "Certificate access middleware could not authenticate user with cert CN={0}"
-msgstr "証明書アクセス用ミドルウェアはcert CN={0}のユーザーを認証できませんでした"
+msgstr "証明書アクセス用ミドルウェアはcert CN={0}のユーザーを認証できません"
 
 #: src/puppetlabs/rbac_client/middleware/authentication.clj
 msgid "Certificate access middleware called, but received a non-ssl request."
@@ -49,7 +49,7 @@ msgstr "証明書アクセス用ミドルウェアを呼び出しましたが、
 
 #: src/puppetlabs/rbac_client/middleware/authentication.clj
 msgid "Route requires authentication"
-msgstr "認証が必要なルートです"
+msgstr "認証が必要な経路です"
 
 #. DOCS REVIEWED
 #: src/puppetlabs/rbac_client/services/rbac.clj
