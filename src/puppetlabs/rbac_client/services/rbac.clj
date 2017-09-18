@@ -17,7 +17,7 @@
   return a map that represents the permission.
   COPY-PASTE: https://github.com/puppetlabs/pe-rbac-service/blob/master/src/clj/puppetlabs/rbac/services/consumer.clj"
   [perm-str]
-  (let [[object-type action instance] (clojure.string/split perm-str #":")]
+  (let [[object-type action instance] (clojure.string/split perm-str #":" 3)]
     {:object_type object-type
      :action action
      :instance instance}))
