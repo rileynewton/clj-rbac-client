@@ -3,7 +3,7 @@
             [puppetlabs.http.client.sync :refer [create-client]]
             [puppetlabs.kitchensink.json :as json]
             [puppetlabs.rbac-client.protocols.rbac :as rbac]
-            [puppetlabs.rbac-client.services.rbac :refer [remote-rbac-consumer-service api-url->status-url]]
+            [puppetlabs.rbac-client.services.rbac :refer [remote-rbac-consumer-service api-url->status-url perm-str->map]]
             [puppetlabs.rbac-client.testutils.config :as cfg]
             [puppetlabs.rbac-client.testutils.http :as http]
             [puppetlabs.trapperkeeper.logging :refer [reset-logging]]
@@ -24,6 +24,25 @@
 (defn- wrap-test-handler-middleware
   [handler]
   (http/wrap-test-handler-middleware handler (:client configs)))
+
+(deftest test-perm-str->map
+  (testing "returns the correct value for a * permission"
+    (is (= {:object_type "environment"
+            :action "deploy_code"
+            :instance "production"}
+           (perm-str->map "environment:deploy_code:production"))))
+
+  (testing "returns the correct value for a simple permission"
+    (is (= {:object_type "console_page"
+           :action "view"
+           :instance "*" }
+           (perm-str->map "console_page:view:*"))))
+
+  (testing "returns the correct value for an instance containing colons"
+    (is (= {:object_type "tasks"
+            :action "run"
+            :instance "package::install" }
+         (perm-str->map "tasks:run:package::install")))))
 
 (deftest test-is-permitted?
   (testing "is-permitted? returns the first result from RBAC's API"
