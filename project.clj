@@ -5,12 +5,12 @@
    :password :env/nexus_jenkins_password
    :sign-releases false})
 
-(defproject puppetlabs/rbac-client "0.7.2-SNAPSHOT"
+(defproject puppetlabs/rbac-client "0.8.0-SNAPSHOT"
   :description "Tools for interacting with PE RBAC"
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
 
-  :parent-project {:coords [puppetlabs/clj-parent "0.6.1"]
+  :parent-project {:coords [puppetlabs/clj-parent "1.4.2"]
                    :inherit [:managed-dependencies]}
 
   :dependencies [[org.clojure/clojure]
