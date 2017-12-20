@@ -15,8 +15,8 @@
     certificate whitelist.")
 
   (cert->subject [this ssl-client-cn]
-     "Given an SSL client CN string, returns the subject associated with that
-     CN, or nil if no subject is associated.")
+    "Given an SSL client CN string, returns the subject associated with that
+    CN, or nil if no subject is associated.")
 
   (valid-token->subject [this token-str]
     "Given a token as a string, this function:
@@ -27,8 +27,13 @@
 
     If 1, 2 fails, a slingshot exception describing the failure is
     thrown.")
+
   (status [this level]
     "Returns the TK status map at the supplied `level`. The `state`
     key has the most interesting information. Callers should not rely
     on the contents of `:status`, which contains the details used to
-    compute the `:state` value."))
+    compute the `:state` value.")
+
+  (list-permitted [this token object-type action]
+    "Returns the list of instances that correspond to the users permissions for
+    a given `object-type` and `action` pair. "))

@@ -20,7 +20,10 @@
                      :detail_level "info",
                      :state :running,
                      :status {:db_up true,
-                              :activity_up true}})))
+                              :activity_up true}})
+                  (list-permitted [this token object-type action]
+                    ["one", "two", "three"])))
+
 
 (defservice dummy-rbac-service
   RbacConsumerService
@@ -46,4 +49,6 @@
            :detail_level "info",
            :state :running,
            :status {:db_up true,
-                    :activity_up true}}))
+                    :activity_up true}})
+  (list-permitted [this token object-type action]
+                  ["one", "two", "three"]))

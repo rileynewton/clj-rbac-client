@@ -12,6 +12,8 @@
   (:import [java.util UUID]
            [java.net URL]))
 
+(def ^:private ^:const authn-header "x-authentication")
+
 (defn perm-str->map
   "Given a permission string of the form <object_type>:<action>:(<instance>|*),
   return a map that represents the permission.
@@ -73,18 +75,24 @@
 
   (init [_ tk-ctx]
         (if-let [rbac-url (get-in-config [:rbac-consumer :api-url])]
-          (let [client (create-client (get-in-config [:global :certs]))]
+          (let [ssl-config (get-in-config [:global :certs])
+                certified-client (create-client ssl-config)
+                uncertified-client (create-client (select-keys ssl-config [:ssl-ca-cert]))]
             (assoc tk-ctx
-                   :client client
-                   :rbac-client (partial rbac-client client rbac-url)
-                   :status-client (partial rbac-client client (api-url->status-url rbac-url))))
+                   :client certified-client
+                   :uncertified-client uncertified-client
+                   :rbac-client (partial rbac-client certified-client rbac-url)
+                   :uncertified-rbac-client (partial rbac-client uncertified-client rbac-url)
+                   :status-client (partial rbac-client certified-client (api-url->status-url rbac-url))))
           (throw+ {:kind :puppetlabs.rbac-client/invalid-configuration
                    :message (i18n/tru "''rbac-consumer'' not configured with an ''api-url''")})))
 
   (stop [this tk-ctx]
     (when-let [client (:client tk-ctx)]
       (http/close client))
-    (dissoc tk-ctx :client))
+    (when-let [client (:uncertified-client tk-ctx)]
+      (http/close client))
+    (dissoc tk-ctx :client :uncertified-client))
 
   (is-permitted? [this subject perm-str]
                  (let [{:keys [rbac-client]} (service-context this)
@@ -129,4 +137,10 @@
           (let [{:keys [status-client]} (service-context this)]
             (-> (status-client :get "" {:query-params {"level" (name level)}})
                 (get-in [:body :rbac-service])
-                (update :state keyword)))))
+                (update :state keyword))))
+
+  (list-permitted [this token object-type action]
+                  (let [{:keys [uncertified-rbac-client]} (service-context this)
+                        headers {:headers {authn-header token}}]
+                    (-> (uncertified-rbac-client :get (str "/v1/permitted/" object-type "/" action) headers)
+                        :body))))

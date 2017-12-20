@@ -112,6 +112,23 @@
                                                   (json/parse-string true))]
               (is (false? update_last_activity?)))))))))
 
+(deftest test-list-permitted
+  (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
+    (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
+        (let [handler (wrap-test-handler-middleware
+                       (fn [req]
+                         (cond
+                           (not (= "token" (get-in req [:headers "x-authentication"])))
+                           (http/json-resp 400 {:kind "mismatched token"})
+
+                           (not (= "/rbac-api/v1/permitted/numbers/count" (get req :uri)))
+                           (http/json-resp 400 (:kind "incorrect url"))
+
+                           :default
+                           (http/json-200-resp ["one" "two" "three"]))))]
+          (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
+              (is (= ["one" "two" "three"] (rbac/list-permitted consumer-svc "token" "numbers" "count"))))))))
+
 (deftest test-status-url
   (are [service-url rbac-api-url] (= service-url (api-url->status-url rbac-api-url))
     "https://foo.com:4444/status/v1/services"
