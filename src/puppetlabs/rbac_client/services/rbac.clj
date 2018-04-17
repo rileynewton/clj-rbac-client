@@ -10,7 +10,7 @@
    [puppetlabs.trapperkeeper.services :refer [service-context]]
    [slingshot.slingshot :refer [throw+]])
   (:import [java.util UUID]
-           [java.net URL]))
+           [java.net URI]))
 
 (def ^:private ^:const authn-header "x-authentication")
 
@@ -61,8 +61,8 @@
 (defn api-url->status-url
   "Given an RBAC api-url, convert that to the related status URL"
   [^String api-url]
-  (let [^URL api-url (java.net.URL. api-url)]
-    (str (.getProtocol api-url)
+  (let [^URI api-url (java.net.URI. api-url)]
+    (str (.getScheme api-url)
          "://"
          (.getHost api-url)
          (when-not (= -1 (.getPort api-url))
