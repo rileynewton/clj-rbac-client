@@ -22,7 +22,9 @@
                      :status {:db_up true,
                               :activity_up true}})
                   (list-permitted [this token object-type action]
-                    ["one", "two", "three"])))
+                    ["one", "two", "three"])
+                  (list-permitted-for [this subject object-type action]
+                    ["four" "five" "six"])))
 
 
 (defservice dummy-rbac-service
@@ -51,4 +53,6 @@
            :status {:db_up true,
                     :activity_up true}})
   (list-permitted [this token object-type action]
-                  ["one", "two", "three"]))
+                  ["one", "two", "three"])
+  (list-permitted-for [this subject object-type action]
+                      ["four" "five" "six"]))

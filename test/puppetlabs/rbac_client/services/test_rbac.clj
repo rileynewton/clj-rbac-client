@@ -122,12 +122,28 @@
                            (http/json-resp 400 {:kind "mismatched token"})
 
                            (not (= "/rbac-api/v1/permitted/numbers/count" (get req :uri)))
-                           (http/json-resp 400 (:kind "incorrect url"))
+                           (http/json-resp 400 {:kind "incorrect url structure"})
 
                            :default
                            (http/json-200-resp ["one" "two" "three"]))))]
           (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
               (is (= ["one" "two" "three"] (rbac/list-permitted consumer-svc "token" "numbers" "count"))))))))
+              
+  (deftest test-list-permitted-for
+    (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
+      (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
+        (let [mock-subj {:id "12345"
+                         :login "login-string"}
+              handler (wrap-test-handler-middleware
+                       (fn [req]
+                         (cond
+                           (not (= "/rbac-api/v1/permitted/object-type/action/12345" (get req :uri)))
+                           (http/json-resp 400 {:kind "incorrect url structure"})
+
+                           :default
+                           (http/json-200-resp ["four" "five" "six"]))))]
+          (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
+            (is (= ["four" "five" "six"] (rbac/list-permitted-for consumer-svc mock-subj "object-type" "action"))))))))
 
 (deftest test-status-url
   (are [service-url rbac-api-url] (= service-url (api-url->status-url rbac-api-url))
