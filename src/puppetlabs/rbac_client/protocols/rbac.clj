@@ -36,4 +36,8 @@
 
   (list-permitted [this token object-type action]
     "Returns the list of instances that correspond to the users permissions for
-    a given `object-type` and `action` pair. "))
+    a given `object-type` and `action` pair. ")
+    
+  (list-permitted-for [this subject object-type action]
+    "Returns the list of instances that correspond to the the user associated with
+    the provided subject, for the given `object_type` and `action` pair."))

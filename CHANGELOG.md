@@ -1,3 +1,6 @@
+### 0.8.2
+  * Implement interface for list-permitted-for method in RBAC
+
 ### 0.6.1
   * Update to clj-parent 0.4.2 to pickup i18n 0.7.0 for pot file renaming
 
