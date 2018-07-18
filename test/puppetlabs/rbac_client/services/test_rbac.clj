@@ -34,14 +34,14 @@
 
   (testing "returns the correct value for a simple permission"
     (is (= {:object_type "console_page"
-           :action "view"
-           :instance "*" }
+            :action "view"
+            :instance "*"}
            (perm-str->map "console_page:view:*"))))
 
   (testing "returns the correct value for an instance containing colons"
     (is (= {:object_type "tasks"
             :action "run"
-            :instance "package::install" }
+            :instance "package::install"}
          (perm-str->map "tasks:run:package::install")))))
 
 (deftest test-is-permitted?
@@ -108,8 +108,8 @@
           (testing "doesn't update activity when the token is suffixed with '|no_keepalive'"
             (let [_ (rbac/valid-token->subject consumer-svc "token|no_keepalive")
                   {:keys [update_last_activity?]} (-> @!last-request
-                                                  :body
-                                                  (json/parse-string true))]
+                                                      :body
+                                                      (json/parse-string true))]
               (is (false? update_last_activity?)))))))))
 
 (deftest test-list-permitted
@@ -129,21 +129,37 @@
           (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
               (is (= ["one" "two" "three"] (rbac/list-permitted consumer-svc "token" "numbers" "count"))))))))
               
-  (deftest test-list-permitted-for
-    (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
-      (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
-        (let [mock-subj {:id "12345"
-                         :login "login-string"}
-              handler (wrap-test-handler-middleware
-                       (fn [req]
-                         (cond
-                           (not (= "/rbac-api/v1/permitted/object-type/action/12345" (get req :uri)))
-                           (http/json-resp 400 {:kind "incorrect url structure"})
+(deftest test-list-permitted-for
+  (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
+    (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
+      (let [mock-subj {:id "12345"
+                       :login "login-string"}
+            handler (wrap-test-handler-middleware
+                     (fn [req]
+                       (cond
+                         (not (= "/rbac-api/v1/permitted/object-type/action/12345" (get req :uri)))
+                         (http/json-resp 400 {:kind "incorrect url structure"})
 
-                           :default
-                           (http/json-200-resp ["four" "five" "six"]))))]
-          (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
-            (is (= ["four" "five" "six"] (rbac/list-permitted-for consumer-svc mock-subj "object-type" "action"))))))))
+                         :default
+                         (http/json-200-resp ["four" "five" "six"]))))]
+        (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
+          (is (= ["four" "five" "six"] (rbac/list-permitted-for consumer-svc mock-subj "object-type" "action"))))))))
+
+(deftest test-subject
+  (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
+    (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
+      (let [mock-subj {:id #uuid "2aa80edb-7f6a-4b94-b6ad-ce9a4cb453b2"
+                       :login "login-string"}
+            handler (wrap-test-handler-middleware
+                     (fn [req]
+                       (cond
+                         (not (= "/rbac-api/v1/users/2aa80edb-7f6a-4b94-b6ad-ce9a4cb453b2" (get req :uri)))
+                         (http/json-resp 400 {:kind "incorrect url structure"})
+
+                         :default
+                         (http/json-200-resp mock-subj))))]
+        (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
+          (is (= mock-subj (rbac/subject consumer-svc "2aa80edb-7f6a-4b94-b6ad-ce9a4cb453b2"))))))))
 
 (deftest test-status-url
   (are [service-url rbac-api-url] (= service-url (api-url->status-url rbac-api-url))

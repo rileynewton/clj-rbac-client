@@ -55,4 +55,7 @@
   (list-permitted [this token object-type action]
                   ["one", "two", "three"])
   (list-permitted-for [this subject object-type action]
-                      ["four" "five" "six"]))
+                      ["four" "five" "six"])
+  (subject [this user-id]
+           {:id user-id
+            :login "anImaginaryUserForTesting"}))
