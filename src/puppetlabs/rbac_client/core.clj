@@ -45,7 +45,7 @@
                           :body (:body response)}
                 :msg (i18n/tru "Error executing {0} to {1} Status: {2,number,#}" (name method) url (:status response))
                 :response (dissoc response :opts)}))
-       response)))
+     response)))
 
 (defn- coerce-body-to-json
   "given a request options map, if the map has a body entry,

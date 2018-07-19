@@ -20,15 +20,15 @@
           app (constantly {:status 500 :body "server error"})
           port 38924]
       (with-test-webserver app port
-(is (= "server error" (:body (core/api-caller client (format "http://localhost:%s/" port) :get ""))))
+        (is (= "server error" (:body (core/api-caller client (format "http://localhost:%s/" port) :get ""))))
         (is (thrown+? [:kind :puppetlabs.rbac-client/status-error]
-               (:body (core/api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true}))))))
-(let [client (create-client {})
+                      (:body (core/api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true}))))))
+
+    (let [client (create-client {})
           app (constantly {:status 500 :body "ok"})
           port 38924]
-        (is (thrown+? [:kind :puppetlabs.rbac-client/connection-failure]
-               (:body (core/api-caller client (format "http://localhost:%s/" port) :get "")))))))
-
+      (is (thrown+? [:kind :puppetlabs.rbac-client/connection-failure]
+                    (:body (core/api-caller client (format "http://localhost:%s/" port) :get "")))))))
 
 (deftest test-json-api-caller
   (with-test-logging
@@ -53,4 +53,4 @@
         (is (thrown+? [:kind :invalid]
                       (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:throw-body true})))
         (is (thrown+? [:kind :puppetlabs.rbac-client/status-error]
-        (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true})))))))
+                      (core/json-api-caller client (format "http://localhost:%s/" port) :get "" {:status-errors true})))))))

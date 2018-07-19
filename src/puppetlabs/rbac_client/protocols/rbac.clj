@@ -40,4 +40,7 @@
     
   (list-permitted-for [this subject object-type action]
     "Returns the list of instances that correspond to the the user associated with
-    the provided subject, for the given `object_type` and `action` pair."))
+    the provided subject, for the given `object_type` and `action` pair.")
+
+  (subject [this uuid]
+   "Given a UUID for a given user, return the full subject representation for the user"))

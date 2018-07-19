@@ -147,6 +147,12 @@
                         
   (list-permitted-for [this subject object-type action]
                       (let [{:keys [rbac-client]} (service-context this)
-                          user-id (str (:id subject))]
+                            user-id (str (:id subject))]
                         (-> (rbac-client :get (str "/v1/permitted/" object-type "/" action "/" user-id))
-                        :body))))
+                            :body)))
+
+  (subject [this user-id]
+           (let [{:keys [rbac-client]} (service-context this)]
+             (-> (rbac-client :get (str "/v1/users/" user-id))
+                 :body
+                 parse-subject))))
