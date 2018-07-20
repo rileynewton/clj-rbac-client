@@ -27,7 +27,9 @@
   :profiles {:dev {:dependencies [[puppetlabs/kitchensink :classifier "test"]
                                   [puppetlabs/trapperkeeper :classifier "test"]
                                   [puppetlabs/trapperkeeper-webserver-jetty9]
-                                  [puppetlabs/trapperkeeper-webserver-jetty9 :classifier "test"]]}
+                                  [puppetlabs/trapperkeeper-webserver-jetty9 :classifier "test"]
+                                  ; transitive dependency
+				  [org.clojure/tools.nrepl "0.2.13"]]}
              :testutils {:source-paths ^:replace  ["test"]}}
 
   :plugins [[lein-parent "0.3.1"]
