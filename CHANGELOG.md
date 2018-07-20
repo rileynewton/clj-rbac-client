@@ -1,3 +1,9 @@
+### 0.9.1
+### 0.8.3
+  * Add to rbac client protocol the "subject" interface, that given a user
+  id, will return the subject that corresponds to that id.
+
+### 0.9.0
 ### 0.8.2
   * Implement interface for list-permitted-for method in RBAC
 
