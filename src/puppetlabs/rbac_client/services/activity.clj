@@ -13,7 +13,9 @@
   [[:ConfigService get-in-config]]
   (init [this context]
     (let [api-url (get-in-config [:activity-consumer :api-url])
-          client (create-client (get-in-config [:global :certs]))]
+          ssl-config (get-in-config [:global :certs])
+          route-limit {:max-connections-per-route 20}
+          client (create-client (merge route-limit ssl-config))]
       (assoc context :client client
              :activity-client (partial json-api-caller client api-url))))
 
