@@ -10,7 +10,7 @@
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
 
-  :parent-project {:coords [puppetlabs/clj-parent "2.0.5"]
+  :parent-project {:coords [puppetlabs/clj-parent "2.3.4"]
                    :inherit [:managed-dependencies]}
 
   :dependencies [[org.clojure/clojure]
