@@ -111,19 +111,21 @@
                         :body)))
 
   (cert-whitelisted? [this ssl-client-cn]
-                     (let [{:keys [rbac-client]} (service-context this)
-                           url (str "/v1/certs/" ssl-client-cn)]
-                       (-> (rbac-client :get url)
-                           :body
-                           :whitelisted)))
+                     (when ssl-client-cn
+                       (let [{:keys [rbac-client]} (service-context this)
+                             url (str "/v1/certs/" ssl-client-cn)]
+                         (-> (rbac-client :get url)
+                             :body
+                             :whitelisted))))
 
   (cert->subject [this ssl-client-cn]
-                 (let [{:keys [rbac-client]} (service-context this)
-                       url (str "/v1/certs/" ssl-client-cn)]
-                   (-> (rbac-client :get url)
-                       :body
-                       :subject
-                       (parse-subject))))
+                 (when ssl-client-cn
+                   (let [{:keys [rbac-client]} (service-context this)
+                         url (str "/v1/certs/" ssl-client-cn)]
+                     (-> (rbac-client :get url)
+                         :body
+                         :subject
+                         (parse-subject)))))
 
   (valid-token->subject [this token-str]
                         (let [{:keys [rbac-client]} (service-context this)
@@ -145,7 +147,7 @@
                         headers {:headers {authn-header token}}]
                     (-> (uncertified-rbac-client :get (str "/v1/permitted/" object-type "/" action) headers)
                         :body)))
-                        
+
   (list-permitted-for [this subject object-type action]
                       (let [{:keys [rbac-client]} (service-context this)
                             user-id (str (:id subject))]

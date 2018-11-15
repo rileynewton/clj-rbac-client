@@ -70,20 +70,28 @@
 (deftest test-cert-whitelisted?
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
-      (doseq [result [true false]]
-        (let [handler (wrap-test-handler-middleware
-                        (constantly (http/json-200-resp {:cn "foobar", :whitelisted result})))]
-          (with-test-webserver-and-config handler _ (:server configs)
-            (is (= result (rbac/cert-whitelisted? consumer-svc "foobar")))))))))
+      (testing "returns the result from RBAC"
+        (doseq [result [true false]]
+          (let [handler (wrap-test-handler-middleware
+                          (constantly (http/json-200-resp {:cn "foobar", :whitelisted result})))]
+            (with-test-webserver-and-config handler _ (:server configs)
+              (is (= result (rbac/cert-whitelisted? consumer-svc "foobar")))))))
+
+      (testing "returns false when no cert is supplied"
+        (is (not (rbac/cert-whitelisted? consumer-svc nil)))))))
 
 (deftest test-cert->subject
  (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
-      (doseq [subject [rand-subject nil]]
-        (let [handler (wrap-test-handler-middleware
-                        (constantly (http/json-200-resp {:cn "foobar", :whitelisted (some? subject), :subject subject})))]
-          (with-test-webserver-and-config handler _ (:server configs)
-            (is (= subject (rbac/cert->subject consumer-svc "foobar")))))))))
+      (testing "returns the result from RBAC"
+        (doseq [subject [rand-subject nil]]
+          (let [handler (wrap-test-handler-middleware
+                          (constantly (http/json-200-resp {:cn "foobar", :whitelisted (some? subject), :subject subject})))]
+            (with-test-webserver-and-config handler _ (:server configs)
+              (is (= subject (rbac/cert->subject consumer-svc "foobar")))))))
+
+      (testing "returns nil when no cert is supplied"
+        (is (nil? (rbac/cert->subject consumer-svc nil)))))))
 
 (deftest test-valid-token->subject
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
@@ -128,7 +136,7 @@
                            (http/json-200-resp ["one" "two" "three"]))))]
           (with-test-webserver-and-config handler _ (assoc (:server configs) :client-auth "want")
               (is (= ["one" "two" "three"] (rbac/list-permitted consumer-svc "token" "numbers" "count"))))))))
-              
+
 (deftest test-list-permitted-for
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
