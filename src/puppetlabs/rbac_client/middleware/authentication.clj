@@ -141,6 +141,16 @@
        wrap-block-anonymous-access
        (wrap-token-access* rbac-svc)))
 
+(defn wrap-cert-only-access
+  "This middleware should be applied to ring handlers that want to allow *only*
+  whitelisted SSL certs. It takes an RBAC Consumer Service and a ring handler
+  to wrap."
+  [rbac-svc handler]
+  (->> handler
+       wrap-block-anonymous-access
+       (wrap-cert-access* rbac-svc)
+       wrap-with-certificate-cn))
+
 (defn wrap-token-and-cert-access
   "A middleware that permits route access by both authentication tokens and
   whitelisted SSL certs. Takes an Rbac Consumer Service and a ring handler."
