@@ -1,3 +1,7 @@
+### 0.9.4
+  * Add wrap-cert-only-access authentication middleware for endpoints that only accept
+    RBAC whitelisted SSL certs.
+
 ### 0.9.1
 ### 0.8.3
   * Add to rbac client protocol the "subject" interface, that given a user
