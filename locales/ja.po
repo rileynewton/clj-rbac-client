@@ -3,15 +3,21 @@
 # This file is distributed under the same license as the puppetlabs.rbac_client package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# LarissaLane <larissa@puppet.com>, 2019
+# sayaka inagaki <sayaka-inagaki@to-in.co.jp>, 2019
+# Atsuya Kumano <at.kumano@gmail.com>, 2019
+# Erwin Hom <erwin.hom@puppet.com>, 2019
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: puppetlabs.rbac_client\n"
 "Report-Msgid-Bugs-To: docs@puppet.com\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: sayaka inagaki <sayaka-inagaki@to-in.co.jp>, 2017\n"
-"Language-Team: Japanese (Japan) (https://www.transifex.com/puppet/teams/59186/ja_JP/)\n"
+"PO-Revision-Date: 2019-01-08 23:35+0000\n"
+"Last-Translator: Erwin Hom <erwin.hom@puppet.com>, 2019\n"
+"Language-Team: Japanese (Japan) (https://www.transifex.com/puppet/teams/41915/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
