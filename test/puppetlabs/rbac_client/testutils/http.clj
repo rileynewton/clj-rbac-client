@@ -68,16 +68,21 @@
                              :rbac-url api-url}}))
         (handler req)))))
 
+(defn wrap-test-handler-mw
+  [handler]
+  (-> handler
+      wrap-params
+      wrap-check-json
+      wrap-read-body))
+
 (defn wrap-test-handler-middleware
   "Given a handler and the TK config map for the consumer service, wrap the
   handler with test middlewares that assert the handler is being given
   well-formed JSON requests to the same server as specified in the config."
   [handler config]
   (-> handler
-    wrap-params
-    wrap-check-json
-    wrap-read-body
-    (wrap-check-base-url config) ))
+      wrap-test-handler-mw
+      (wrap-check-base-url config)))
 
 (defn json-resp
   "Construct a ring response map with the given status code that has an

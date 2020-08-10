@@ -1,3 +1,7 @@
+### 1.0.0
+  * update to use clj-parent 2.6.0
+  * add support for activity v2 api and fall back to v1 if v2 isn't supported
+
 ### 0.9.4
   * Add wrap-cert-only-access authentication middleware for endpoints that only accept
     RBAC whitelisted SSL certs.
