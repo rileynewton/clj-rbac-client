@@ -42,5 +42,6 @@
   [jetty-ssl-config]
   (let [{:keys [ssl-host ssl-port]} jetty-ssl-config]
     {:rbac-consumer {:api-url (format "https://%s:%s/rbac-api" ssl-host ssl-port)}
+     :activity-consumer {:api-url (format "https://%s:%s/activity-api" ssl-host ssl-port)}
      :global {:certs client-ssl-config
               :logging-config "dev-resources/logback-test.xml"}}))

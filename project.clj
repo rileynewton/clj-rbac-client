@@ -5,12 +5,12 @@
    :password :env/clojars_jenkins_password
    :sign-releases false})
 
-(defproject puppetlabs/rbac-client "0.9.5-SNAPSHOT"
+(defproject puppetlabs/rbac-client "1.0.0-SNAPSHOT"
   :description "Tools for interacting with PE RBAC"
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0.html"}
 
-  :parent-project {:coords [puppetlabs/clj-parent "2.3.4"]
+  :parent-project {:coords [puppetlabs/clj-parent "2.6.0"]
                    :inherit [:managed-dependencies]}
 
   :dependencies [[org.clojure/clojure]
@@ -29,7 +29,7 @@
                                   [puppetlabs/trapperkeeper-webserver-jetty9]
                                   [puppetlabs/trapperkeeper-webserver-jetty9 :classifier "test"]
                                   ; transitive dependency
-				  [org.clojure/tools.nrepl "0.2.13"]]}
+                                  [org.clojure/tools.nrepl "0.2.13"]]}
              :testutils {:source-paths ^:replace  ["test"]}}
 
   :plugins [[lein-parent "0.3.1"]
