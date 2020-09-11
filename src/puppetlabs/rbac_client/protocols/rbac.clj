@@ -11,6 +11,10 @@
     responses.")
 
   (cert-whitelisted? [this ssl-client-cn]
+    "DEPRECATED: use cert-allowed? instead. Given an SSL client CN string, returns whether or not that CN is on RBAC's
+    certificate whitelist.")
+
+  (cert-allowed? [this ssl-client-cn]
     "Given an SSL client CN string, returns whether or not that CN is on RBAC's
     certificate whitelist.")
 
@@ -37,7 +41,7 @@
   (list-permitted [this token object-type action]
     "Returns the list of instances that correspond to the users permissions for
     a given `object-type` and `action` pair. ")
-    
+
   (list-permitted-for [this subject object-type action]
     "Returns the list of instances that correspond to the the user associated with
     the provided subject, for the given `object_type` and `action` pair.")
