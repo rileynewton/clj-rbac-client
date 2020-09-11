@@ -1,3 +1,8 @@
+### 1.1.0
+  * deprecate cert-whitelisted?
+  * convert client to use RBAC v2/certs endpoint in favor of v1.  Falls back to v1 if v2 isn't available
+  * use clj-parent 4.6.3
+  
 ### 1.0.0
   * update to use clj-parent 2.6.0
   * add support for activity v2 api and fall back to v1 if v2 isn't supported

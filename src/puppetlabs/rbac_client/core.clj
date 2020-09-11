@@ -7,7 +7,7 @@
    [puppetlabs.kitchensink.json :as json])
   (:import [com.fasterxml.jackson.core JsonParseException]))
 
-(defn- http-error?
+(defn http-error?
   "Given a response map from the RBAC HTTP API, checks to see if it is a 4xx or
   5xx."
   [response]
@@ -57,9 +57,17 @@
         (update-in [:body] json/generate-string))
     request))
 
+(defn parse-body
+  [response]
+  (try
+    (json/parse-string (:body response) true)
+    (catch com.fasterxml.jackson.core.JsonParseException _
+      (throw+ {:kind :puppetlabs.rbac-client/json-parse-error
+               :msg (i18n/tru "Invalid JSON body: {0}" (:body response))}))))
+
 (defn json-api-caller
   "Wraps api caller but will convert the body of the request/response to/from json.
-  Adds approrpriate content type headers."
+  Adds appropriate content type headers."
   ([client base-url method path] (json-api-caller client base-url method path {}))
   ([client base-url method path opts]
    (let [throw-body (:throw-body opts)
@@ -69,11 +77,7 @@
                   (dissoc :throw-body)
                   (update-in [:status-errors] #(if throw-body false %)))
          response (api-caller client base-url method path opts)
-         parsed-body (try
-                       (json/parse-string (:body response) true)
-                       (catch com.fasterxml.jackson.core.JsonParseException e
-                         (throw+ {:kind :puppetlabs.rbac-client/json-parse-error
-                                  :msg (i18n/tru "Invalid JSON body: {0}" (:body response))})))]
+         parsed-body (parse-body response)]
      (when (and throw-body (http-error? response))
        (throw+ (update-in parsed-body [:kind] keyword)))
      (assoc response :body parsed-body))))

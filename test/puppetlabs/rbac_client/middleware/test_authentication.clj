@@ -65,7 +65,7 @@
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
       (testing "when everything goes well, the subject map is added to the request object"
-        (let [rbac-handler (constantly (http/json-200-resp {:whitelisted true :subject rand-subject}))]
+        (let [rbac-handler (constantly (http/json-200-resp {:allowlisted true :subject rand-subject}))]
           (with-test-webserver-and-config rbac-handler _ (:server configs)
             (with-redefs [ssl-utils/get-cn-from-x509-certificate (constantly "foo.example.com")]
               (let [authd-handler (->> (fn [req] (http/json-200-resp (:subject req)))
@@ -76,7 +76,7 @@
                        (json/parse-string (:body resp) true))))))))
 
       (testing "the middleware blocks requests with an authorized token from a non-whitelisted cert"
-        (let [rbac-handler (constantly (http/json-200-resp {:whitelisted false :subject nil}))]
+        (let [rbac-handler (constantly (http/json-200-resp {:allowlisted false :subject nil}))]
           (with-test-webserver-and-config rbac-handler _ (:server configs)
             (with-redefs [ssl-utils/get-cn-from-x509-certificate (constantly "foo.example.com")]
               (let [authd-handler (->> (fn [req] (is (= rand-subject (:subject req))))
@@ -85,7 +85,7 @@
                 (is (= 401 (:status resp))))))))
 
       (testing "the middleware blocks requests that have a non-whitelisted cert"
-        (let [rbac-handler (constantly (http/json-200-resp {:whitelisted false :subject nil}))]
+        (let [rbac-handler (constantly (http/json-200-resp {:allowlisted false :subject nil}))]
           (with-test-webserver-and-config rbac-handler _ (:server configs)
             (with-redefs [ssl-utils/get-cn-from-x509-certificate (constantly "foo.example.com")]
               (let [authd-handler (->> (fn [req] (is (true? "middleware blocked request")))
@@ -97,7 +97,7 @@
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
       (testing "when everything goes well, the subject map is added to the request object"
-        (let [rbac-handler (constantly (http/json-200-resp {:whitelisted true :subject rand-subject}))]
+        (let [rbac-handler (constantly (http/json-200-resp {:allowlisted true :subject rand-subject}))]
           (with-test-webserver-and-config rbac-handler _ (:server configs)
             (with-redefs [ssl-utils/get-cn-from-x509-certificate (constantly "foo.example.com")]
               (let [authd-handler (->> (fn [req] (http/json-200-resp (:subject req)))
@@ -111,11 +111,11 @@
         (let [rbac-handler (constantly (http/json-200-resp rand-subject))]
           (with-test-webserver-and-config rbac-handler _ (:server configs)
             (let [authd-handler (->> (fn [req] (is (= rand-subject (:subject req))))
-                                      (middleware/wrap-token-and-cert-access consumer-svc))]
+                                     (middleware/wrap-token-and-cert-access consumer-svc))]
               (authd-handler request-with-token)))))
 
       (testing "the middleware blocks requests that have a non-whitelisted cert"
-        (let [rbac-handler (constantly (http/json-200-resp {:whitelisted false :subject nil}))]
+        (let [rbac-handler (constantly (http/json-200-resp {:allowlisted false :subject nil}))]
           (with-test-webserver-and-config rbac-handler _ (:server configs)
             (with-redefs [ssl-utils/get-cn-from-x509-certificate (constantly "foo.example.com")]
               (let [authd-handler (->> (fn [req] (is (true? "middleware blocked request")))

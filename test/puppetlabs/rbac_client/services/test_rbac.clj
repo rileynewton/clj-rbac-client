@@ -70,25 +70,108 @@
 (deftest test-cert-whitelisted?
   (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
-      (testing "returns the result from RBAC"
+      (testing "returns the result from RBAC using v2 endpoint"
         (doseq [result [true false]]
           (let [handler (wrap-test-handler-middleware
-                          (constantly (http/json-200-resp {:cn "foobar", :whitelisted result})))]
+                          (fn [req]
+                           (when (= "/rbac-api/v2/certs/foobar" (get req :uri))
+                             (http/json-200-resp {:cn "foobar", :allowlisted result, :subject rand-subject}))))]
             (with-test-webserver-and-config handler _ (:server configs)
               (is (= result (rbac/cert-whitelisted? consumer-svc "foobar")))))))
-
+      (testing "tries v2, falls back to v1, and v1 afterward"
+        (let [subject rand-subject
+              v2-count (atom 0)
+              v1-count (atom 0)
+              handler (wrap-test-handler-middleware
+                        (fn [req]
+                          (case (get req :uri)
+                            "/rbac-api/v2/certs/foobar" (do
+                                                          (swap! v2-count inc)
+                                                          (http/json-resp 404 {}))
+                            "/rbac-api/v1/certs/foobar" (do
+                                                          (swap! v1-count inc)
+                                                          (http/json-200-resp {:cn "foobar", :whitelisted true, :subject subject})))))]
+          (with-test-webserver-and-config handler _ (:server configs)
+            (is (= true (rbac/cert-whitelisted? consumer-svc "foobar")))
+            (is (= 1 (deref v2-count)))
+            (is (= 1 (deref v1-count)))
+            (is (= true (rbac/cert-whitelisted? consumer-svc "foobar")))
+            (is (= true (rbac/cert-whitelisted? consumer-svc "foobar")))
+            (is (= true (rbac/cert-whitelisted? consumer-svc "foobar")))
+            (is (= 1 (deref v2-count)))
+            (is (= 4 (deref v1-count))))))
       (testing "returns false when no cert is supplied"
         (is (not (rbac/cert-whitelisted? consumer-svc nil)))))))
+
+(deftest test-cert-allowed?
+  (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
+    (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
+      (testing "returns the result from RBAC using v2 endpoint"
+        (doseq [result [true false]]
+          (let [handler (wrap-test-handler-middleware
+                         (fn [req]
+                          (when (= "/rbac-api/v2/certs/foobar" (get req :uri))
+                            (http/json-200-resp {:cn "foobar", :allowlisted result, :subject rand-subject}))))]
+            (with-test-webserver-and-config handler _ (:server configs)
+                                            (is (= result (rbac/cert-allowed? consumer-svc "foobar")))))))
+      (testing "tries v2, falls back to v1, and v1 afterward"
+        (let [subject rand-subject
+              v2-count (atom 0)
+              v1-count (atom 0)
+              handler (wrap-test-handler-middleware
+                       (fn [req]
+                         (case (get req :uri)
+                           "/rbac-api/v2/certs/foobar" (do
+                                                         (swap! v2-count inc)
+                                                         (http/json-resp 404 {}))
+                           "/rbac-api/v1/certs/foobar" (do
+                                                         (swap! v1-count inc)
+                                                         (http/json-200-resp {:cn "foobar", :whitelisted true, :subject subject})))))]
+          (with-test-webserver-and-config handler _ (:server configs)
+                                          (is (= true (rbac/cert-allowed? consumer-svc "foobar")))
+                                          (is (= 1 (deref v2-count)))
+                                          (is (= 1 (deref v1-count)))
+                                          (is (= true (rbac/cert-allowed? consumer-svc "foobar")))
+                                          (is (= true (rbac/cert-allowed? consumer-svc "foobar")))
+                                          (is (= true (rbac/cert-allowed? consumer-svc "foobar")))
+                                          (is (= 1 (deref v2-count)))
+                                          (is (= 4 (deref v1-count))))))
+      (testing "returns false when no cert is supplied"
+        (is (not (rbac/cert-allowed? consumer-svc nil)))))))
 
 (deftest test-cert->subject
  (with-app-with-config tk-app [remote-rbac-consumer-service] (:client configs)
     (let [consumer-svc (tk-app/get-service tk-app :RbacConsumerService)]
-      (testing "returns the result from RBAC"
+      (testing "uses the v2 endpoint"
         (doseq [subject [rand-subject nil]]
           (let [handler (wrap-test-handler-middleware
-                          (constantly (http/json-200-resp {:cn "foobar", :whitelisted (some? subject), :subject subject})))]
+                         (fn [req]
+                           (when (= "/rbac-api/v2/certs/foobar" (get req :uri))
+                            (http/json-200-resp {:cn "foobar", :allowlisted (some? subject), :subject subject}))))]
             (with-test-webserver-and-config handler _ (:server configs)
               (is (= subject (rbac/cert->subject consumer-svc "foobar")))))))
+      (testing "tries v2, falls back to v1, and v1 afterward"
+        (let [subject rand-subject
+              v2-count (atom 0)
+              v1-count (atom 0)
+              handler (wrap-test-handler-middleware
+                        (fn [req]
+                          (case (get req :uri)
+                            "/rbac-api/v2/certs/foobar" (do
+                                                          (swap! v2-count inc)
+                                                          (http/json-resp 404 {}))
+                            "/rbac-api/v1/certs/foobar" (do
+                                                          (swap! v1-count inc)
+                                                          (http/json-200-resp {:cn "foobar", :whitelisted (some? subject), :subject subject})))))]
+          (with-test-webserver-and-config handler _ (:server configs)
+            (is (= subject (rbac/cert->subject consumer-svc "foobar")))
+            (is (= 1 (deref v2-count)))
+            (is (= 1 (deref v1-count)))
+            (is (= subject (rbac/cert->subject consumer-svc "foobar")))
+            (is (= subject (rbac/cert->subject consumer-svc "foobar")))
+            (is (= subject (rbac/cert->subject consumer-svc "foobar")))
+            (is (= 1 (deref v2-count)))
+            (is (= 4 (deref v1-count))))))
 
       (testing "returns nil when no cert is supplied"
         (is (nil? (rbac/cert->subject consumer-svc nil)))))))
