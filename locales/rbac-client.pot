@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Puppet <docs@puppet.com>
 # This file is distributed under the same license as the puppetlabs.rbac_client package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR. 
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: puppetlabs.rbac_client \n"
+"X-Git-Ref: 2409cbd4165f6741a5d775b812edef71325d66ee\n"
 "Report-Msgid-Bugs-To: docs@puppet.com\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -57,4 +58,10 @@ msgstr ""
 
 #: src/puppetlabs/rbac_client/services/rbac.clj
 msgid "''rbac-consumer'' not configured with an ''api-url''"
+msgstr ""
+
+#: src/puppetlabs/rbac_client/services/rbac.clj
+msgid ""
+"DEPRECATION: the 'cert-whitelisted?' function has been deprecated and will "
+"be removed in future versions. Use `cert-allowed?` instead."
 msgstr ""
