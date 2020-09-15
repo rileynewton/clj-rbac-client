@@ -19,60 +19,47 @@
   (http/wrap-test-handler-mw handler))
 
 (def v2-bundle
-  {:commit
-   {:service
-    {:id "namer"}}
-   :subject
-   {:name "Herman Melville"
-    :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
-   :objects
-   [{:name "Herman Aldrich"
-     :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32"
-     :type "a Herman"}
-    {:name "Herman Miller",
-     :id "2d5d4e0b-5353-4bbd-9c4c-084177caac33",
-     :type "a Herman"}
-    {:name "Herman Stump",
-     :id "2d5d4e0b-5353-4bbd-9c4c-084177caac34",
-     :type "a Herman"}
-    {:name "Herman W. Hellman",
-     :id "2d5d4e0b-5353-4bbd-9c4c-084177caac35",
-     :type "a Herman"}]
-   :ip-address "an ip address"})
+  {:commit {:service {:id "namer"}
+            :subject {:name "Herman Melville"
+                      :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
+            :objects 
+              [{:name "Herman Aldrich"
+                :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32"
+                :type "a Herman"}
+               {:name "Herman Miller",
+                :id "2d5d4e0b-5353-4bbd-9c4c-084177caac33",
+                :type "a Herman"}
+               {:name "Herman Stump",
+                :id "2d5d4e0b-5353-4bbd-9c4c-084177caac34",
+                :type "a Herman"}
+               {:name "Herman W. Hellman",
+                :id "2d5d4e0b-5353-4bbd-9c4c-084177caac35",
+                :type "a Herman"}]
+            :ip-address "an ip address"}})
 
 (def v1-bundle
-  {:commit
-   {:service
-    {:id "namer"}}
-   :subject
-   {:name "Herman Melville"
-    :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
-   :object {:name "Herman Aldrich"
-            :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32"
-            :type "a Herman"}})
+  {:commit {:service {:id "namer"}
+            :subject {:name "Herman Melville" 
+                      :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
+            :object {:name "Herman Aldrich" 
+                     :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32" 
+                     :type "a Herman"}}})
 
 (def expected-v1-bundle
-  {:commit
-   {:service
-    {:id "namer"}}
-   :subject
-   {:name "Herman Melville"
-    :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
-   :object
-   {:name "Herman Aldrich"
-    :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32"
-    :type "a Herman"}})
+  {:commit {:service {:id "namer"}
+            :subject {:name "Herman Melville"
+                      :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
+            :object {:name "Herman Aldrich"
+                     :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32"
+                     :type "a Herman"}}})
 
 (def expected-v1-upgraded-bundle
-  {:commit
-   {:service
-    {:id "namer"}}
-   :subject
-   {:name "Herman Melville"
-    :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
-   :objects [{:name "Herman Aldrich"
-              :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32"
-              :type "a Herman"}]})
+  {:commit {:service {:id "namer"}
+            :subject {:name "Herman Melville"
+                      :id "42bf351c-f9ec-40af-84ad-e976fec7f4bd"}
+            :objects [{:name "Herman Aldrich"
+                       :id "2d5d4e0b-5353-4bbd-9c4c-084177caac32"
+                       :type "a Herman"}]}})
 
 
 (deftest test-activity
