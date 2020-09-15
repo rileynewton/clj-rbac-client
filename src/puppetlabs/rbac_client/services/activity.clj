@@ -11,19 +11,18 @@
 (defn v1->v2
   ;; make any adjustments needed to make a (maybe) v1 payload into a v2 payload
   [event-bundle]
-  (if (contains? event-bundle :object)
-    (-> event-bundle
-        (dissoc :object)
-        (assoc :objects [(:object event-bundle)]))
+  (if-let [object (get-in event-bundle [:commit :object])]
+    (-> (assoc-in event-bundle [:commit :objects] [object])
+        (update-in [:commit] dissoc :object))
     event-bundle))
 
 (defn v2->v1
   ;; make any adjustments needed to make a (maybe) v2 payload into a v1 payload
   [event-bundle]
-  (let [result (dissoc event-bundle :ip-address)]
-    (if (contains? event-bundle :objects)
-      (-> (dissoc result :objects)
-          (assoc :object (first (:objects event-bundle))))
+  (let [result (update-in event-bundle [:commit] dissoc :ip-address)]
+    (if-let [objects (get-in event-bundle [:commit :objects])]
+      (-> (assoc-in result [:commit :object] (first objects))
+          (update-in [:commit] dissoc :objects))
       result)))
 
 (defn report-activity
