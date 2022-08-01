@@ -26,13 +26,12 @@
      :instance instance}))
 
 (defn str->uuid
-  "COPY-PASTE: https://github.com/puppetlabs/pe-rbac-service/blob/master/src/clj/puppetlabs/rbac/utils.clj"
+  "Convert a string into a UUID. If the ojbect is already a UUID return it"
   [str-uuid]
   (try
-    (UUID/fromString str-uuid)
-    (catch IllegalArgumentException e
+    (if (uuid? str-uuid) str-uuid (UUID/fromString str-uuid))
+    (catch IllegalArgumentException _
       (throw+ {:uuid str-uuid
-               ;; DOCS REVIEWED
                :msg (i18n/tru "Error parsing UUID {0}" str-uuid)
                :kind ::invalid-uuid}))))
 
