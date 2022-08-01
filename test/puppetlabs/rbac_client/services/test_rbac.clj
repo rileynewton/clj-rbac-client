@@ -3,7 +3,7 @@
             [puppetlabs.http.client.sync :refer [create-client]]
             [puppetlabs.kitchensink.json :as json]
             [puppetlabs.rbac-client.protocols.rbac :as rbac]
-            [puppetlabs.rbac-client.services.rbac :refer [remote-rbac-consumer-service api-url->status-url perm-str->map]]
+            [puppetlabs.rbac-client.services.rbac :refer [remote-rbac-consumer-service api-url->status-url perm-str->map parse-subject]]
             [puppetlabs.rbac-client.testutils.config :as cfg]
             [puppetlabs.rbac-client.testutils.http :as http]
             [puppetlabs.trapperkeeper.logging :refer [reset-logging]]
@@ -325,3 +325,9 @@
                 :status {:db_up false,
                          :activity_up true}}
                (rbac/status consumer-svc "critical")))))))
+
+(deftest parse-subject-test
+  (testing "parses subject with string id"
+    (is (uuid? (:id (parse-subject (assoc rand-subject :id (.toString (UUID/randomUUID)))))))))
+  (testing "parses subject with UUID id"
+    (is (uuid? (:id (parse-subject rand-subject)))))
