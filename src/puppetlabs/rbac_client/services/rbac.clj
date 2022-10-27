@@ -26,7 +26,7 @@
      :instance instance}))
 
 (defn str->uuid
-  "Convert a string into a UUID. If the ojbect is already a UUID return it"
+  "Convert a string into a UUID. If the object is already a UUID return it"
   [str-uuid]
   (try
     (if (uuid? str-uuid) str-uuid (UUID/fromString str-uuid))
@@ -41,15 +41,22 @@
     (assoc subject-map :group_ids (map str->uuid group-ids))
     subject-map))
 
+(defn identity-provider-id-str->uuid
+  [subject-map]
+  (if-let [identity-provider-id (:identity_provider_id subject-map)]
+    (assoc subject-map :identity_provider_id (str->uuid identity-provider-id))
+    subject-map))
+
 (defn parse-subject
   [subject]
-  (if subject
+  (when subject
     (-> subject
         (select-keys [:id :login :display_name :email
                       :last_login :role_ids :inherited_role_ids
                       :group_ids :is_superuser :is_revoked
-                      :is_remote :is_group])
+                      :is_remote :is_group :identity_provider_id])
         group-ids-str->uuids
+        identity-provider-id-str->uuid
         (update :id str->uuid))))
 
 (defn rbac-client

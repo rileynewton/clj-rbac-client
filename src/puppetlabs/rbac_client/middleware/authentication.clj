@@ -110,7 +110,8 @@
    (sc/optional-key :is_superuser) sc/Bool
    (sc/optional-key :is_revoked) sc/Bool
    (sc/optional-key :is_remote) sc/Bool
-   (sc/optional-key :is_group) sc/Bool})
+   (sc/optional-key :is_group) sc/Bool
+   (sc/optional-key :identity_provider_id) (sc/maybe java.util.UUID)})
 
 (defn- wrap-block-anonymous-access
   "This internal middleware blocks any request that doesn't have a key set for
