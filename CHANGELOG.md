@@ -1,3 +1,16 @@
+### 1.1.4
+ * add optional identity provider id into RBAC subject
+ * update clj-parent to 5.2.11
+
+### 1.1.3 
+ * update str->uuid function to allow UUIDs
+
+### 1.1.2
+ * update clj-parent 4.6.17
+
+### 1.1.1
+ * fix activity reporting event handling
+
 ### 1.1.0
   * deprecate cert-whitelisted?
   * convert client to use RBAC v2/certs endpoint in favor of v1.  Falls back to v1 if v2 isn't available
