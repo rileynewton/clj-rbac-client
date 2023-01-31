@@ -11,7 +11,7 @@ openssl req -x509 \
   -newkey rsa:4096 \
   -keyout dev-resources/ssl/ca.key \
   -out dev-resources/ssl/ca.pem \
-  -days 1825 -nodes \
+  -days 24855 -nodes \
   -extensions x509v3_CA \
   -config dev-resources/exts.cnf \
   -subj "/C=US/ST=OR/L=Portland/O=Puppet, Inc/CN=puppet"
@@ -35,7 +35,7 @@ openssl x509 -req \
   -CAkey dev-resources/ssl/ca.key \
   -CAcreateserial \
   -out dev-resources/ssl/cert.pem \
-  -days 1825 -sha256
+  -days 24855 -sha256
 
 echo
 echo "Generating alternate self-signed CA"
@@ -43,7 +43,7 @@ openssl req -x509 \
   -newkey rsa:4096 \
   -keyout dev-resources/ssl/alternate-ca.key \
   -out dev-resources/ssl/alternate-ca.pem \
-  -days 1825 -nodes \
+  -days 24855 -nodes \
   -extensions x509v3_CA \
   -config dev-resources/exts.cnf \
   -subj "/C=US/ST=OR/L=Portland/O=Puppet, Inc/CN=alternate"
